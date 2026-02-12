@@ -1,6 +1,6 @@
-designer: SATISFIED
 security: SATISFIED
-sre: SATISFIED
-qa: SATISFIED
 pm: SATISFIED
+designer: SATISFIED
+sre: SATISFIED
 dev: SATISFIED
+qa: SATISFIED

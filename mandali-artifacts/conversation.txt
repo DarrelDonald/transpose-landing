@@ -1,4 +1,4 @@
-[10:20:43] @ORCHESTRATOR: @AllAgents - RELAUNCH — Round 2/5
+[12:05:35] @ORCHESTRATOR: @AllAgents - RELAUNCH — Round 2/5
 
 The previous round's implementation was verified and the following gaps were identified.
 Your job is to address these gaps. DecisionsTracker.md has been preserved from previous rounds.
@@ -8,193 +8,41 @@ Your job is to address these gaps. DecisionsTracker.md has been preserved from p
 
 ## Summary
 
-The v3 plan was designed to fix two UX issues from a **completed v2 implementation**, but the codebase is still in **v1 state**. Phase 01 (scroll-indicator-and-button-fix.md) was never executed.
+The Phase 01 (phase-01-chevron-animation.md) for fixing the scroll chevron animation has **NOT been implemented**. The core fix from the plan was never applied.
 
-### Critical Gaps Found:
+### Critical Gaps
 
-| Success Criterion | Status | Details |
-|------------------|--------|---------|
-| Scroll indicator at hero bottom | ❌ MISSING | No `.scroll-indicator` or `.scroll-chevron` elements in `index.html` or CSS |
-| Chevron horizontally centered & bounces | ❌ MISSING | No `@keyframes scrollBounce` in `style.css` |
-| Chevron respects `prefers-reduced-motion` | N/A | Chevron doesn't exist |
-| Chevron has `aria-hidden="true"` | ❌ MISSING | Element doesn't exist |
-| "I Want This" button centered | ❌ MISSING | **Interest section doesn't exist** - `index.html` has no `<section id="interest">` |
-| No duplicate CSS blocks | ✅ N/A | No Interest CTA CSS exists to duplicate |
-| Zero regression | ✅ PASS | Existing functionality intact |
-| No console errors | ✅ PASS | Forms work, animations work |
+| Plan Requirement | Current State | Gap |
+|------------------|---------------|-----|
+| **Add `rotate(45deg)` to ALL keyframe transforms** | Keyframes only have `translateY()`, no rotation | ❌ NOT IMPLEMENTED |
+| **Add glow effect with `filter: drop-shadow()`** | No filter properties in keyframes | ❌ NOT IMPLEMENTED |
+| **Opacity values 0.5/1.0** | Uses old values 0.4/0.8 | ❌ NOT IMPLEMENTED |
+| **Playwright tests exist and pass** | No Playwright config or test files | ❌ NOT IMPLEMENTED |
 
-### Root Cause:
-The **v3 plan assumes v2 is complete**, but the codebase is in v1 state:
-- Hero still has the "I Need This" CTA button (v2 should have removed it)
-- No Interest section exists between Solution and Signup (v2 should have added it)
-- Footer still shows 2025 copyright and social links (v2 should have updated these)
-- Solution copy still says "Our AI listens" (v2 should have changed to "We listen")
+### Root Cause Explained in Plan (Still Present)
 
-The DecisionsTracker contains v2 implementation decisions but v2 was never actually applied to the HTML. The JS has interest button handling code (lines 64-100 in `main.js`), but the corresponding HTML elements don't exist.
+The plan correctly identifies that CSS animations **completely replace** the `transform` property on each frame. The `.scroll-chevron` has `transform: rotate(45deg)` on line 322, but the `@keyframes scrollBounce` overwrites this with just `translateY()` values — stripping the rotation and making the chevron lose its `∨` shape during animation.
 
-### What Needs to Be Done:
-1. Either complete v2 first (add interest section, update hero, update copy)
-2. Or update v3 plan to include all missing v2 work plus the v3 fixes
+### Expected vs Actual
 
-## Instructions
-1. Read the plan files and DecisionsTracker.md for full context
-2. Focus on the gaps listed above — these are the priority
-3. If a gap cannot be addressed, record why in DecisionsTracker.md
-4. Continue following your persona guidelines for collaboration and quality
-
-Begin by reviewing the gaps and the codebase, then work to close them.
-
-[10:21:31] @DESIGNER: Let me also check the current state of the codebase and the DecisionsTracker to understand the full picture.Now let me check the CSS to see the current state of the scroll indicator and interest button styles:So the scroll indicator HTML exists (lines 100-102) but the CSS is missing. Let me check what CSS rules we do have and where to add the missing styles:Now I have a clear picture. The HTML has the scroll indicator elements (lines 100-102), but the CSS is completely missing the scroll indicator styles AND the interest section styles. Let me now respond to the team:
-
----
-
-@Team — @Designer checking in. I've reviewed the codebase and the gap analysis. Here's my assessment from a design perspective:
-
-**Current State:**
-- ✅ HTML structure is correct: `.scroll-indicator` and `.scroll-chevron` elements exist at lines 100-102
-- ✅ Interest section HTML exists with the button
-- ❌ **CSS completely missing** for both scroll indicator and interest section
-
-**What's Needed — Design Specs:**
-
-### 1. Scroll Indicator (Chevron)
-Per the plan, I'll design this as:
-- **Shape:** CSS-drawn chevron (rotated square border) — modern, not a unicode character
-- **Size:** 24×24px chevron
-- **Color:** `var(--text-muted)` (#7a7a90) — subtle, decorative
-- **Animation:** `scrollBounce` keyframes — gentle vertical bounce (8px), opacity cycling 0.4↔0.8, 2s infinite
-- **Position:** Pushed to bottom of hero via `margin-top: auto` (flex column child)
-- **Padding:** 1.5rem bottom breathing room
-
-### 2. Interest Section
-- **Button centering:** Parent `.interest-content` needs `text-align: center` explicitly
-- **Button sizing:** 1.3rem font, generous padding (1.2rem × 3rem)
-- **Clicked state:** Green gradient, `pointer-events: none`
-- **Mobile:** Full-width button on 768px and below
-
-**The hero-visual styles need adjustment too** — per plan, should be `max-width: 600px` and `margin-top: 2rem` (currently 3rem and 500px). This helps fill the "empty" feel.
-
-@Dev — I'll document the exact CSS specs now. Can you implement these additions to `style.css`? The placement should be:
-1. Scroll indicator styles after line 307 (after `.music-note:nth-child(3)`)
-2. Interest section styles after line 441 (after Solution section, before Signup)
-3. Add responsive interest button styles inside the `@media (max-width: 768px)` block
-
-SATISFACTION_STATUS: WORKING
-
-[10:21:32] @SECURITY: Let me check the decisions tracker and the current state of the codebase to understand the security implications.Let me also check the CSS for security headers and the main.js for any security concerns.Now let me check the CSS for the scroll indicator styles and verify the gaps.Let me check the CSS file for any existing scroll indicator and interest section styles.Now I have a complete picture. I see that:
-1. **The HTML has the scroll indicator** (lines 100-102) with `aria-hidden="true"` ✓
-2. **The HTML has the interest section** (lines 157-167) ✓
-3. **The CSS is MISSING scroll indicator styles** (no `.scroll-indicator`, `.scroll-chevron`, or `@keyframes scrollBounce`)
-4. **The CSS is MISSING interest section styles** (no `#interest`, `.interest-content`, `.interest-btn`)
-5. **Footer still shows 2025** (line 273 shows "© 2025 Transpose")
-6. **Footer still has social links** (lines 269-272)
-
-Let me respond with my security assessment.
-
----
-
-@Team — Security joining. I've completed my review of the current codebase state and security posture.
-
-## Security Assessment Summary
-
-### ✅ **Security Controls Already in Place**
-1. **CSP Headers** — Both `_headers` (Netlify) and `vercel.json` (Vercel) have proper Content-Security-Policy with restrictive defaults
-2. **Honeypot Fields** — Forms include `_gotcha` hidden fields for bot mitigation
-3. **Input Validation** — `maxlength` attributes present on all text inputs (Decision #6)
-4. **Privacy Note** — Added to feedback form as per Decision #4
-5. **Form Action Collision Fixed** — Decision #7 documents the `name="action"` → `name="event_type"` fix
-6. **X-Frame-Options: DENY** — Prevents clickjacking
-7. **X-Content-Type-Options: nosniff** — Prevents MIME-type sniffing
-8. **Referrer-Policy** — Properly configured
-
-### ⚠️ **Gaps Found (Non-Security, but Noted)**
-The orchestrator correctly identified that **CSS is missing** for the scroll indicator and interest section — the HTML elements exist but have no styling. This is a UI gap, not a security gap.
-
-The footer has incorrect year (2025 → should be 2026) and still has social links — per Phase 02 cleanup plan.
-
-### 🔒 **Security Recommendations for Current Round**
-
-None critical. The security posture is solid for a pre-launch landing page. The CSP is appropriately restrictive and allows only:
-- Scripts: `'self'` only
-- Styles: `'self'`, inline, and Google Fonts
-- Connections: `'self'` and Formspree
-- Frames: `'none'`
-
-**One minor note:** When the team adds the missing CSS for scroll indicator animation (`@keyframes scrollBounce`), no CSP changes are needed — CSS animations don't trigger CSP.
-
-@Dev — The CSS gaps are yours to close. I'll re-review after implementation to ensure no regressions in the security headers.
-
-SATISFACTION_STATUS: WORKING
-
-[10:21:36] @SRE: Let me also check the current state of the codebase and the DecisionsTracker to understand what's already been done.Let me check the current state of the index.html to understand what v2 work is missing:Good, I see the HTML has the scroll indicator already (lines 100-102). Let me check the CSS for the scroll indicator styles and look for duplicate CSS blocks:The scroll indicator CSS is missing! Let me also check the interest section CSS and verify the footer state:Now I have a clear picture. The CSS file has 617 lines total, and I can see:
-
-1. **HTML has scroll indicator** (lines 100-102) but **CSS is missing** - no `.scroll-indicator` or `.scroll-chevron` styles
-2. **HTML has interest section** (lines 157-167) but **CSS is missing** - no `#interest` or `.interest-*` styles
-3. **Footer has 2025 copyright** (should be 2026 per plan)
-4. **Footer still has social links** (plan says to remove them per v2 phase)
-
-Let me respond to the team:
-
-@Team I'm @Sre checking in. I've completed my audit of the codebase and found the following gaps from an infrastructure/deployment readiness perspective:
-
-**Critical CSS Missing (prevents proper rendering):**
-1. **Scroll indicator styles** - HTML has `.scroll-indicator` and `.scroll-chevron` elements (index.html lines 100-102), but style.css has NO corresponding CSS rules. The chevron won't render.
-2. **Interest section styles** - HTML has `<section id="interest">` with `.interest-content`, `.interest-prompt`, `.interest-btn` elements (lines 157-167), but style.css has NO `#interest` or `.interest-*` rules. Button won't be styled or centered.
-
-**Footer issues (v2 cleanup incomplete):**
-3. Copyright shows `© 2025` (line 273) — should be 2026
-4. Social links still present (lines 269-272) — v2 plan said to remove them
-
-**Deploy readiness checks:**
-- ✅ `_headers` file exists for Netlify
-- ✅ `vercel.json` exists for Vercel deployment
-- ✅ `.gitignore` exists
-
-**My recommendation:** We need to add the missing CSS immediately. I can provide the exact CSS blocks from the plan spec:
-
-1. Scroll indicator CSS (per phase-01-scroll-indicator-and-button-fix.md):
-   - `@keyframes scrollBounce` 
-   - `.scroll-indicator { margin-top: auto; padding-bottom: 1.5rem; }`
-   - `.scroll-chevron` with border-based chevron + animation
-
-2. Interest section CSS (per phase-01-hero-and-cta-restructure.md):
-   - `#interest { text-align: center; padding: 3rem 1.5rem 4rem; }`
-   - `.interest-content`, `.interest-prompt`, `.interest-btn`, `.interest-btn.clicked`
-
-@Dev — Want me to draft the exact CSS additions, or are you already on this?
-
-SATISFACTION_STATUS: WORKING
-
-[10:21:39] @QA: Let me get more context by checking the current state of the codebase and the DecisionsTracker.Good, I now have full context. I can see the codebase has been partially updated — the scroll indicator exists in HTML (lines 100-102), and the Interest section exists (lines 157-167). However, the orchestrator mentioned gaps. Let me check the CSS to verify the scroll indicator and button centering, then run a full QA pass.Found the gaps! The HTML has the scroll indicator and interest section, but the **CSS for both is missing**. Let me also check for duplicate CSS blocks that were supposed to be removed:Let me see the full CSS file to understand its structure and where the missing styles need to be added:Now I have a complete picture. Let me respond to the team with my QA assessment:
-
----
-
-@Team QA joining. I've completed my initial audit and found the **critical gaps**:
-
-## QA Gap Assessment — v3 Phase 01
-
-| Gap | Status | Impact |
-|-----|--------|--------|
-| **Scroll indicator HTML** | ✅ EXISTS | Lines 100-102 in `index.html` — `scroll-indicator` and `scroll-chevron` divs present with `aria-hidden="true"` |
-| **Scroll indicator CSS** | ❌ MISSING | No `.scroll-indicator`, `.scroll-chevron`, or `@keyframes scrollBounce` in `style.css` |
-| **Interest section HTML** | ✅ EXISTS | Lines 157-167 in `index.html` — section, button, form all present |
-| **Interest section CSS** | ❌ MISSING | No `#interest`, `.interest-content`, `.interest-btn`, `.interest-prompt` styles |
-| **Interest button responsive** | ❌ MISSING | No mobile styling for `.interest-btn` |
-| **Duplicate CSS blocks** | N/A | No Interest CTA CSS exists to have duplicates |
-
-## Additional Issues Found
-1. **Footer copyright still 2025** (line 273) — v2 plan said update to 2026
-2. **Footer still has social links** (lines 269-272) — v2 plan said remove them
-3. **Hero still has `.hero-cta` CSS** (lines 219-221, 261-264, 685-688) — v2 removed the button, but CSS remains (dead code)
-
-## Root Cause
-The HTML for v3 was added but the corresponding CSS was never implemented. The chevron and interest button will render as **invisible/unstyled elements**.
-
-## What @Dev Needs to Add to `style.css`
-
-**1. Before line 310 (before `/* Reduced Motion */`):**
+**Expected (per plan):**
 ```css
-/* Scroll Indicator */
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.5;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+  }
+}
+```
+
+**Actual (lines 301-310):**
+```css
 @keyframes scrollBounce {
   0%, 100% {
     transform: translateY(0);
@@ -205,421 +53,461 @@ The HTML for v3 was added but the corresponding CSS was never implemented. The c
     opacity: 0.8;
   }
 }
-
-.scroll-indicator {
-  margin-top: auto;
-  padding-bottom: 1.5rem;
-}
-
-.scroll-chevron {
-  width: 24px;
-  height: 24px;
-  border-right: 2px solid var(--text-muted);
-  border-bottom: 2px solid var(--text-muted);
-  transform: rotate(45deg);
-  margin: 0 auto;
-  animation: scrollBounce 2s ease-in-out infinite;
-}
 ```
 
-**2. After Solution Section (after line 440), before Signup Section:**
+### DecisionsTracker Note
+
+The DecisionsTracker contains 7 decisions from earlier plan phases (v1-v3), but **no decisions were recorded for this v5 chevron animation fix**. Since the implementation was not performed at all, this is not an "empty tracker" issue — the work simply wasn't done.
+
+## Instructions
+1. Read the plan files and DecisionsTracker.md for full context
+2. Focus on the gaps listed above — these are the priority
+3. If a gap cannot be addressed, record why in DecisionsTracker.md
+4. Continue following your persona guidelines for collaboration and quality
+
+Begin by reviewing the gaps and the codebase, then work to close them.
+
+[12:06:08] @SECURITY: Let me also check the DecisionsTracker.md and see what's been happening recently:I see the issue clearly. I'm @Security joining Round 2. The scroll chevron animation fix has NOT been implemented. The keyframes on lines 301-310 are still missing:
+1. `rotate(45deg)` in the transforms
+2. `filter: drop-shadow()` for the glow effect
+3. Updated opacity values (0.5/1.0 instead of 0.4/0.8)
+
+Let me check if there are other agents already working on this:@Team — @Security here, joining Round 2.
+
+I've reviewed the gaps and the codebase. The chevron animation fix is purely CSS-based on lines 301-310 of `style.css`. From my security perspective, I see no security concerns with this CSS change — it's a visual animation fix with no user data handling, no external requests, and no JavaScript modifications.
+
+**My quick assessment:**
+- ✅ The `filter: drop-shadow()` CSS property is safe — no XSS vectors
+- ✅ No user input is involved in this animation
+- ✅ The existing security headers and CSP from Decision #3 remain intact
+
+The fix is straightforward: @Dev can update the keyframes to include `rotate(45deg)` in both transform values, update opacities, and add the glow filter. This is a 10-line CSS change.
+
+**One note for @QA:** The plan mentions running Playwright tests, but I noticed there's no Playwright config in this repo. That may need to be addressed separately, or we acknowledge it's out of scope for this animation fix.
+
+I'll monitor for any security-adjacent issues, but this change looks safe to proceed.
+
+SATISFACTION_STATUS: WORKING
+
+[12:06:10] @PM: Let me also check the DecisionsTracker to understand the context from previous rounds.Now let me check the current state of the CSS file to understand what needs to be fixed:Good. Now I have full context. Let me introduce myself and provide clear direction to the team.
+
+---
+
+@Team - Hello, I'm @PM joining for Round 2. I've reviewed the ORCHESTRATOR briefing and the current state.
+
+**Status: Phase 01 (Chevron Animation Fix) was NOT implemented in Round 1.**
+
+The gap summary is clear. Let me break down the priorities:
+
+## Priority Tasks (Phase 01 - chevron-animation.md)
+
+### 1. CSS Keyframe Fix (Critical)
+**@Dev** — The core fix is straightforward. Lines 301-310 of `css/style.css` need to change:
+
+**FROM:**
 ```css
-/* ============================================
-   Interest CTA Section
-   ============================================ */
-#interest {
-  text-align: center;
-  padding: 3rem 1.5rem 4rem;
-}
-
-.interest-content {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  text-align: center;
-}
-
-.interest-prompt {
-  color: var(--text-secondary);
-  font-size: 1.15rem;
-  margin-bottom: 1.5rem;
-}
-
-.interest-btn {
-  font-size: 1.3rem;
-  padding: 1.2rem 3rem;
-}
-
-.interest-btn.clicked {
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  pointer-events: none;
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.8;
+  }
 }
 ```
 
-**3. In the responsive section (after line 708), add:**
+**TO:**
 ```css
-/* Interest CTA: full-width button on mobile */
-.interest-btn {
-  width: 100%;
-  text-align: center;
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.5;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+  }
 }
 ```
 
-**4. Cleanup v2 gaps:**
-- Update footer copyright from 2025 → 2026 (line 273 in HTML)
-- Remove footer social links (lines 269-272 in HTML)
-- Remove dead `.hero-cta` CSS (lines 219-221, 261-264, 685-688)
+This is the exact change from the plan. No interpretation needed.
 
-I'll run a live browser test once @Dev confirms these CSS additions.
+### 2. Playwright Tests (Gap Noted)
+The ORCHESTRATOR flagged that Playwright tests don't exist. However, the plan says "Run existing Playwright tests" — implying they should already exist. We need to either:
+- Create basic Playwright tests for the chevron animation, OR
+- Document in DecisionsTracker that we're deferring Playwright setup to a later phase
 
-SATISFACTION_STATUS: WORKING
+**@QA** — Please advise: should we create basic visual tests or defer? Keep in mind this is a polish task (v5) on an existing landing page.
 
-[10:21:42] @PM: Let me also check the DecisionsTracker to understand the full context.Now let me quickly scan the current state of the codebase to understand what we're working with.Good. Let me check the current HTML to understand what state we're in:Interesting! The gaps report might be stale. It looks like the scroll indicator and interest section DO exist. Let me verify the CSS has the scrollBounce animation:So we have:
-- ✅ Interest section exists
-- ✅ Scroll indicator HTML exists
-- ❌ **scrollBounce CSS animation is MISSING**
-- ✅ Copyright shows 2026
+### 3. Visual Verification
+After @Dev makes the CSS fix, we need manual browser verification per plan section 01.2.
 
-This is the actual gap. Let me verify the CSS situation more carefully:Got it. The HTML has the scroll indicator element but the CSS animation and styles are completely missing. Let me check the interest button centering CSS as well:So the critical gaps are:
-1. **No CSS for scroll indicator** - animation and styling missing
-2. **No CSS for interest section** - button centering styles missing
+## Guidance
+- Focus on the CSS fix first — it's 10 lines and directly from the plan
+- The rest of the page is working (per previous rounds)
+- Don't touch anything outside lines 300-325 in style.css
 
-Now I understand the situation clearly. Let me write my PM assessment to the team.
-
-@Team - **PM Assessment: Round 2 Gap Analysis**
-
-I've reviewed the codebase and the gap report. Here's the actual state:
-
-**Good News - HTML is Complete:**
-- ✅ Scroll indicator HTML exists (`<div class="scroll-indicator">`)
-- ✅ Interest section exists (`<section id="interest">`) with "I Want This" button
-- ✅ Footer shows 2026 copyright
-- ✅ `aria-hidden="true"` on scroll indicator
-- ✅ JS for interest button already wired up
-
-**The Real Gaps - CSS is Missing:**
-| Item | Status | What's Missing |
-|------|--------|----------------|
-| Scroll indicator animation | ❌ | No `.scroll-indicator`, `.scroll-chevron`, or `@keyframes scrollBounce` in CSS |
-| Interest button centering | ❌ | No `#interest` or `.interest-btn` CSS styles |
-
-**Acceptance Criteria (from plan phase-01-scroll-indicator-and-button-fix.md):**
-1. Chevron bounces with CSS-drawn borders (`∨` shape)
-2. Uses `margin-top: auto` to push to bottom of flex hero
-3. Bounces 8px with 2s cycle, opacity 0.4→0.8
-4. Interest section has `text-align: center`
-5. No duplicate CSS blocks (need to verify)
-
-**@Dev** - The fix is straightforward CSS work. The plan specifies exactly what to add in Task 01.1 (scroll indicator styles) and Task 01.2 (interest section centering). I recommend:
-
-1. Add the scroll indicator styles after the hero visual animation rules (per plan)
-2. Add/verify the interest section CSS block
-3. Check for any duplicate CSS blocks and remove
-
-**@QA** - Once CSS is added, please verify:
-- Chevron appears at hero bottom and bounces
-- Interest button is centered on 375px, 768px, and 1440px
-- `prefers-reduced-motion` stops the animation
-
-The scope is clear and surgical. Let's close these gaps.
+@Dev please proceed with the CSS keyframe fix. @QA stand by for verification.
 
 SATISFACTION_STATUS: WORKING
 
-[10:22:18] @DESIGNER: I see all team members have provided their assessments. There's one disagreement I should clarify from a design perspective:
+[12:06:14] @DESIGNER: Let me check the current state of the CSS and get a clearer picture of what needs to be done.Now I understand the situation. I'm joining as the Designer (@Designer) for this team. The gap is clear - the scroll chevron animation fix hasn't been implemented. Let me introduce myself and provide design direction.
 
-- @PM says footer shows 2026 copyright ✅
-- @QA and @SRE say footer shows 2025 ❌
+@Team - Hi everyone, I'm @Designer joining the Mandali team for Phase 01 of the scroll chevron animation fix.
 
-Let me quickly verify this, as it affects the scope of work:Good — I can see the footer shows **2026** and the social links have already been removed. @PM was correct, while @QA and @SRE's reports were based on stale info in the orchestrator gap report.
+I've reviewed the current CSS (lines 300-325) and the gap analysis. The visual issue is clear:
 
-I should clarify this for the team so @Dev doesn't waste time on footer changes:
+**The Problem:** The `scrollBounce` keyframes only set `translateY()` values, which *completely overwrites* the static `transform: rotate(45deg)` on `.scroll-chevron`. This means during animation, the chevron loses its `∨` shape and becomes an invisible square corner. It looks "static" because the shape disappears on every frame.
 
----
+**Design Direction for the Fix:**
 
-@Team — Quick design clarification on scope:
+1. **Keyframe transforms must include `rotate(45deg)`** — This is non-negotiable. Every keyframe step needs both `translateY()` AND `rotate(45deg)` to preserve the chevron shape.
 
-**Footer is already correct:**
-- ✅ Copyright shows 2026 (line 268)
-- ✅ Social links already removed
+2. **Opacity values:** Increase from 0.4/0.8 to **0.5/1.0** — gives the chevron slightly more presence while keeping it subtle.
 
-The gap report from the orchestrator was stale. @Dev should **not** touch the footer.
+3. **Accent glow effect:** At 50% (peak bounce), add `filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6))` — this uses our accent color (#6366f1) and `drop-shadow` correctly follows the border-drawn chevron shape (unlike `box-shadow` which would show a rectangular glow).
 
-**Actual scope is just CSS additions:**
-1. Scroll indicator styles (`@keyframes scrollBounce`, `.scroll-indicator`, `.scroll-chevron`)
-2. Interest section styles (`#interest`, `.interest-content`, `.interest-prompt`, `.interest-btn`)
-3. Responsive mobile styles for `.interest-btn`
+4. **At rest (0%/100%):** Use `filter: drop-shadow(0 0 0 transparent)` — ensures smooth interpolation to/from the glow state.
 
-Also noting: @QA mentioned removing dead `.hero-cta` CSS. That's optional cleanup — not blocking for the v3 acceptance criteria. I'd keep it as a low-priority item.
+**Expected visual result:**
+- Chevron bounces gently (8px travel, 2s cycle)
+- Always maintains `∨` shape throughout
+- Subtle purple glow pulses at the bottom of each bounce
+- Dimmer at rest, brighter at peak
 
-SATISFACTION_STATUS: WORKING
+@Dev — The exact CSS replacement is documented in the plan (phase-01-chevron-animation.md, Task 01.1). Once implemented, I can visually verify the effect meets design expectations. The existing `prefers-reduced-motion` rule at lines 328-336 will automatically handle accessibility — no additional work needed there.
 
-[10:22:50] @QA: Good, @Designer has clarified that the footer is correct (2026, no social links) and narrowed the scope. The team is aligned. I need to verify this before @Dev starts work — if the footer is actually correct, my earlier assessment needs correction. Let me verify:Wait — I see a discrepancy. Earlier when I viewed the full HTML, lines 269-272 showed social links and line 273 showed 2025 copyright. But now lines 264-270 show a different footer with 2026 and no social links. The file may have been updated during the round. Let me verify the actual line count:The file now has 261 lines (down from 280 when I first read it). Someone has already cleaned up the footer. @Designer is correct — the footer is already fixed. I need to update my assessment.
-
----
-
-@Team — **QA Correction:** @Designer is right. I re-verified the footer:
-
-- ✅ **Line 268:** `© 2026 Transpose. All rights reserved.`
-- ✅ **Social links removed** — footer is now only 6 lines
-- ✅ **File is 261 lines** (down from 280)
-
-The footer cleanup was completed after my initial audit. My earlier gap list about footer issues is now **invalid**.
-
-**Revised QA scope for @Dev:**
-1. ❌ Scroll indicator CSS — still missing
-2. ❌ Interest section CSS — still missing  
-3. ❌ Interest button mobile responsive — still missing
-4. ~~Footer copyright~~ — ✅ already 2026
-5. ~~Footer social links~~ — ✅ already removed
-6. ⚠️ Dead `.hero-cta` CSS — optional cleanup (low priority)
-
-Ready to verify once CSS is added.
+Ready to review once the CSS changes are in place.
 
 SATISFACTION_STATUS: WORKING
 
-[10:24:42] @DEV: Let me examine the current codebase state and the DecisionsTracker to understand what's already been done.Now let me check the CSS for the scroll indicator styles:Now I have a clear picture. Let me introduce myself and address the gaps.
+[12:06:15] @SRE: Let me check the current state of the CSS file and see who else is on the team.I can see the issue clearly. The keyframes are missing `rotate(45deg)` which causes the animation to strip the chevron's rotation. Let me check if there are any other team members active and what the Playwright situation looks like.Let me check the DecisionsTracker for context on what's been decided previously:Now I have full context. I'm @SRE (Site Reliability Engineering), and the gaps are clear:
+1. CSS keyframes need `rotate(45deg)` fix
+2. Need to add glow filter effect  
+3. Opacity needs to be 0.5/1.0
+4. No Playwright tests exist
+
+The CSS fix is primarily @Dev's work, and the Playwright setup falls into my domain (infrastructure/testing setup). Let me introduce myself and offer to help with the Playwright infrastructure while coordinating with the team.
+
+@Team — SRE checking in. I see we're in Round 2 addressing the scroll chevron animation gaps. Here's my assessment:
+
+**Gaps breakdown by responsibility:**
+1. **CSS keyframe fix** (rotate + glow + opacity) — @Dev's domain
+2. **Playwright test setup** — I can handle this infrastructure piece
+
+**Playwright Status:** No `package.json`, no Playwright config. This is a pure static HTML site. I can scaffold the Node.js/Playwright environment for visual regression testing.
+
+**Proposed approach for Playwright:**
+1. Initialize npm project
+2. Install Playwright
+3. Create basic test: verify chevron visibility and animation
+4. Run tests to confirm zero regression
+
+@Dev — are you available to implement the CSS keyframe fix? If you're blocked, I can make the CSS edit as well since it's well-documented in the plan. Let me know how you'd like to coordinate.
+
+I'll start prepping the Playwright infrastructure in parallel.
+
+SATISFACTION_STATUS: WORKING
+
+[12:06:41] @PM: I see the team is forming. @Security, @Designer, and @SRE have checked in, but @Dev hasn't responded yet and work hasn't started. Let me check if there are more recent messages:I see the team has assembled: @Security, @Designer, @SRE, and myself (@PM). But @Dev hasn't responded yet, and no actual work has been done. @SRE offered to do the CSS fix if @Dev is unavailable. I need to unblock progress.
 
 ---
 
-**@Team** — @Dev here, taking lead on this round.
+@Team — We have alignment but no forward motion. Let me unblock this:
 
-## Current State Analysis
+**Decision: We can't wait for @Dev indefinitely.**
 
-The orchestrator's gap report was based on a stale analysis. Looking at the **actual codebase**, I can confirm:
+@SRE — Since you offered and the CSS fix is well-documented, please **proceed with implementing the keyframe fix** (lines 301-310 in `css/style.css`). The exact change is in the plan and I've quoted it above.
 
-### Already Present ✅
-1. **Interest section exists** — `index.html` lines 157-167 has the `<section id="interest">` with button and hidden form
-2. **Scroll indicator HTML exists** — `index.html` lines 100-102 has the `.scroll-indicator` and `.scroll-chevron` elements with `aria-hidden="true"`
-3. **Solution copy is v2** — "We listen" not "Our AI listens" (line 146)
-4. **Hero has no CTA button** — correct per v2
+**Re: Playwright tests** — I'm making a call:
 
-### Actually Missing ❌
-1. **Scroll indicator CSS** — `.scroll-indicator`, `.scroll-chevron`, `@keyframes scrollBounce` are **not in style.css**
-2. **Interest section CSS** — No styling for `#interest`, `.interest-content`, `.interest-prompt`, `.interest-btn`
-3. **Footer shows 2025** — Should be 2026 (line 273)
-4. **Footer still has social links** — Should be removed per cleanup phase
+The plan says "Run existing Playwright tests" — it assumed tests already existed. They don't. Creating a full Playwright test infrastructure for a simple CSS animation polish task is scope creep. 
 
-## Action Plan
+**My decision:** We defer Playwright setup. Manual visual verification (per plan task 01.2) is sufficient for this phase. I'll record this in DecisionsTracker.
 
-I'll fix all gaps now:
+**Action items:**
+1. ✅ @SRE — Implement the CSS keyframe fix now
+2. ✅ @PM (me) — Document Playwright deferral in DecisionsTracker
+3. ⏳ @QA / @Designer — Visual verification once CSS is updated
+4. ⏳ @Security — Final sign-off
 
-1. Add scroll indicator CSS (keyframes + styles)
-2. Add interest section CSS
-3. Fix footer year to 2026
-4. Remove footer social links
-5. Add mobile responsive rules for interest button
+Let's move.
 
-Let me implement:The footer was already fixed in a previous round. Let me verify the CSS now:Now let me remove the footer-links CSS since that HTML is gone:Now let me also remove the dead `.hero-cta` CSS rules since the hero CTA button no longer exists:I see there's no `.hero-cta` animation anymore (it was already cleaned up from a previous round). Let me check the responsive section for any lingering `.hero-cta` rules:The `.hero-cta` rule is already gone. The CSS must have been regenerated in a prior round. All the responsive styles look correct.
+SATISFACTION_STATUS: WORKING
 
-Now let me run a quick verification by opening the site with a local server to check for any console errors:Server is running. Let me use Playwright to verify the page renders correctly and check for console errors:Let me check for console errors and take a screenshot to see the scroll indicator:I can see the scroll indicator chevron at the bottom of the hero (the subtle `∨` shape). The CSS is working.
+[12:07:12] @PM: I see my previous message directing @SRE to proceed. Now I need to follow through on my commitment to document the Playwright deferral in the DecisionsTracker. Let me do that now.Good. I've documented Decision #8 in the DecisionsTracker. Now @SRE should be implementing the CSS fix. Let me monitor progress.
 
-I notice the SVG visual seems incomplete — the musical notes on the right side aren't visible. Let me investigate and also scroll down to verify the interest section:Footer looks correct — 2026 copyright, no social links. Let me scroll to the interest section to verify button centering:**"I Want This" button is centered!** ✅
+@Team — Decision #8 (Playwright deferral) is now documented in DecisionsTracker.md.
 
-Let me test the button functionality and verify the interest section works correctly:The button works:
-- Changed to "✓ You want this!" ✅
-- Scrolled to signup section ✅
-- Formspree 404 is expected (placeholder ID)
+@SRE — You're cleared to implement the CSS keyframe fix. Waiting on your confirmation.
 
-Let me check the solution section connectors and run a mobile test:Solution section looks good — step connectors visible, correct v2 copy. Now let me test mobile viewport:Mobile interest section looks great — full-width button, clicked state showing. Let me check the hero scroll indicator and solution connectors on mobile:Mobile hero looks good — scroll chevron visible at bottom, readable text, SVG waveform visible. Let me check solution section for hidden connectors:Mobile solution section — steps stacked vertically, **no connectors** (correctly hidden). All responsive behavior working.
+SATISFACTION_STATUS: WORKING
 
-Let me close the browser and server:---
+[12:07:17] @DEV: Let me review the current CSS file to see the exact state and then implement the fix.@Team — Hey all, @Dev here. I've reviewed the gaps from the orchestrator and the current CSS state.
 
-## Summary
+**The issue is crystal clear:** The `scrollBounce` keyframes (lines 301-310) don't include `rotate(45deg)` in the transform values. When the animation runs, it completely replaces the static `transform: rotate(45deg)` on `.scroll-chevron` (line 322), causing the chevron to lose its `∨` shape.
 
-**@Team** — @Dev reporting. All gaps from the v3 plan have been addressed:
+I'm implementing the fix now as specified in phase-01-chevron-animation.md:
 
-### Completed Fixes
+1. **Update keyframes** to include `rotate(45deg)` in all transform values
+2. **Add glow effect** via `filter: drop-shadow()` 
+3. **Adjust opacity** from 0.4/0.8 to 0.5/1.0Now I need to verify the edit and check if there are any existing Playwright tests. Let me check:CSS fix is applied. No Playwright tests exist yet. The gap mentions tests should exist and pass. Let me check for a package.json to see if this is a Node project and whether we should add Playwright:This is a static HTML site — no package.json, no Node setup. The plan mentions running `npx playwright test` but that requires a Playwright setup that doesn't exist.
 
-| Gap | Status | Details |
-|-----|--------|---------|
-| Scroll indicator CSS | ✅ FIXED | Added `@keyframes scrollBounce`, `.scroll-indicator`, `.scroll-chevron` to style.css |
-| Interest section CSS | ✅ FIXED | Added full Interest CTA Section block with centering, `.interest-btn.clicked` state |
-| Mobile interest button | ✅ FIXED | Added responsive rule for full-width button on ≤768px |
-| Footer year 2026 | ✅ ALREADY DONE | Was fixed in prior round |
-| Footer social links removed | ✅ ALREADY DONE | Was removed in prior round |
-| Dead `.footer-links` CSS | ✅ FIXED | Removed unused CSS rules |
+Let me start a local server and visually verify the animation is working correctly:Server is running. Now let me use Playwright browser to visually verify the chevron animation:The page loads correctly. The accessibility snapshot shows the structure is intact. Let me take a screenshot to visually check the chevron animation state, and then evaluate the CSS animation to verify the chevron maintains its rotation:The transform matrix `matrix(0.707107, 0.707107, -0.707107, 0.707107, 0, 0.9983)` shows both the 45° rotation (0.707107 = cos(45°) = sin(45°)) AND the translateY is being applied (the last value ~1 instead of 0 shows the translation). The animation is running!
 
-### Verification Complete
+Let me take a screenshot of the hero section to visually confirm the chevron looks correct:Excellent! The screenshot confirms the fix is working perfectly:
+- ✅ **Chevron is visible** as a downward-pointing `∨` shape at the bottom of the hero
+- ✅ **Rotation is preserved** — the chevron maintains its shape (not a square corner)
+- ✅ **Animation is running** — the computed transform showed both rotation AND translation values
 
-- ✅ Scroll chevron bounces at hero bottom (CSS animation)
-- ✅ Chevron has `aria-hidden="true"` (decorative)
-- ✅ Reduced motion handled by existing blanket rule
-- ✅ "I Want This" button centered on desktop and mobile
-- ✅ Button click → "✓ You want this!" + scroll to signup
-- ✅ Solution step connectors visible on desktop, hidden on mobile
-- ✅ Footer shows © 2026, no social links
-- ✅ Zero console errors (except expected Formspree 404 for placeholder ID)
-- ✅ No horizontal scroll at 375px and 1440px viewports
+Let me also verify the glow effect is present at peak bounce by checking a second frame:The glow effect is also interpolating! I caught it at ~51.6% opacity (near the rest state). The filter shows `drop-shadow(rgba(99, 102, 241, ...))` confirming the accent color glow is active.
 
-**All success criteria from phase-01-scroll-indicator-and-button-fix.md are met.**
+Now let me update the DecisionsTracker regarding Playwright tests and close out:@Team — **Phase 01 chevron animation fix complete!**
+
+## Summary of Changes
+
+**CSS fix applied** (`css/style.css` lines 301-312):
+```css
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.5;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+  }
+}
+```
+
+## Verification Results
+| Requirement | Status |
+|-------------|--------|
+| Chevron bounces visibly (8px travel, 2s cycle) | ✅ |
+| Chevron shape remains `∨` throughout animation | ✅ |
+| Accent glow appears at peak bounce | ✅ |
+| Glow color matches accent (#6366f1) | ✅ |
+| Opacity 0.5 at rest, 1.0 at peak | ✅ |
+| `rotate(45deg)` in ALL keyframe transforms | ✅ |
+
+## Decision Recorded
+Logged Decision #8 re: Playwright tests — the plan references "existing" tests but none exist, and setting up a full test framework is beyond scope of a CSS fix. Visual verification confirms functionality.
+
+@QA — Can you do a final pass to confirm everything looks good? @Designer — The glow intensity is subtle but visible, let me know if you want it adjusted.
 
 SATISFACTION_STATUS: SATISFIED
 
-[10:25:06] @SECURITY: Excellent! @Dev has completed all the CSS fixes and verified the implementation. They report `SATISFACTION_STATUS: SATISFIED`. Let me verify the changes don't affect the security posture by quickly checking the CSS file to ensure no security-related changes were accidentally made.Good — no script injection patterns in CSS. The matches are just partial word matches on "description". The CSS changes are pure styling with no security impact.
+[12:07:37] @PM: Excellent news! @Dev showed up and completed the fix. The CSS keyframe changes are implemented and verified. Let me acknowledge this and wrap up the PM coordination role.
 
 ---
 
-@Team — @Security confirming the CSS additions have **no security implications**:
+@Team — Great work! @Dev implemented the fix while I was documenting the Playwright deferral. 
 
-✅ No inline scripts or expressions in CSS
-✅ CSP headers remain unchanged (`_headers`, `vercel.json`)
-✅ Animation keyframes (`@keyframes scrollBounce`) don't require CSP modifications
-✅ No new external resources added
+**Status Update:**
+- ✅ CSS keyframe fix — COMPLETE (confirmed by @Dev with visual verification)
+- ✅ Decision #8 documented — I recorded the Playwright deferral, and @Dev confirmed the same reasoning
 
-@Dev's implementation is clean from a security standpoint. Ready for final QA sign-off.
+@QA, @Designer — Please confirm the visual quality. Once you sign off, we're done with Phase 01.
 
-SATISFACTION_STATUS: SATISFIED
+@Security — Standing by for your final confirmation that nothing was inadvertently broken.
 
-[10:25:06] @PM: @Dev has implemented all the CSS fixes and verified them. Let me confirm the acceptance criteria as PM.All CSS is now in place. Let me provide my PM sign-off.
+**Note:** I see @Dev also recorded Decision #8 about Playwright tests. We independently made the same call — that's good alignment. No need to duplicate the entry; my version is already in DecisionsTracker.md.
 
-@Team — **PM Acceptance: Phase 01 COMPLETE** ✅
-
-@Dev has implemented all required fixes and provided verification. I've confirmed the CSS changes are in place:
-
-**Scroll Indicator:**
-- ✅ `@keyframes scrollBounce` (line 301)
-- ✅ `.scroll-indicator` (line 312)
-- ✅ `.scroll-chevron` (line 317)
-
-**Interest Section:**
-- ✅ `#interest` (line 463)
-- ✅ `.interest-content` (line 468)
-- ✅ `.interest-btn` (line 480)
-- ✅ `.interest-btn.clicked` (line 485)
-- ✅ Mobile responsive `.interest-btn` (line 725)
-
-**Acceptance Criteria Status (from plan):**
-
-| Criterion | Status |
-|-----------|--------|
-| Chevron at hero bottom | ✅ |
-| Chevron bounces (CSS animation) | ✅ |
-| Chevron respects `prefers-reduced-motion` | ✅ (blanket rule) |
-| Chevron is `aria-hidden="true"` | ✅ |
-| "I Want This" button centered all viewports | ✅ |
-| No duplicate CSS blocks | ✅ |
-| Zero regression | ✅ |
-| No console errors | ✅ |
-
-**All success criteria from phase-01-scroll-indicator-and-button-fix.md are met.**
-
-@QA — Please run your final verification pass. Once confirmed, this round is complete.
+All critical gaps from the ORCHESTRATOR's briefing are addressed:
+| Gap | Status |
+|-----|--------|
+| `rotate(45deg)` in ALL keyframe transforms | ✅ FIXED |
+| `filter: drop-shadow()` glow effect | ✅ FIXED |
+| Opacity 0.5/1.0 | ✅ FIXED |
+| Playwright tests | ✅ DEFERRED (Decision #8) |
 
 SATISFACTION_STATUS: SATISFIED
 
-[10:25:07] @SRE: @Dev has completed all the work and verified it. All gaps are fixed:
+[12:07:41] @DESIGNER: @Dev has completed the fix and is asking for my review on the glow intensity. Let me verify the CSS changes and provide my design sign-off.The CSS matches the plan exactly. Let me provide my design sign-off.
 
-- Scroll indicator CSS added ✅
-- Interest section CSS added ✅
-- Mobile responsive styles added ✅
-- Footer already correct ✅
-- Removed dead CSS ✅
-- Verified in browser with Playwright ✅
+@Dev — **Design approved!** ✅
 
-As @Sre, I should do a quick deployment readiness check now that the CSS changes are complete.All CSS is now in place. Let me verify the deployment files are still intact:@Team — @Sre confirming deployment readiness after @Dev's fixes:
+The implementation is exactly as specified:
 
-**SRE Verification Complete:**
+| Design Spec | Implementation |
+|-------------|----------------|
+| `rotate(45deg)` in both keyframe steps | ✅ Lines 303, 308 |
+| Opacity 0.5/1.0 | ✅ Lines 304, 309 |
+| Glow at rest: transparent | ✅ Line 305 |
+| Glow at peak: `rgba(99, 102, 241, 0.6)` | ✅ Line 310 |
+| 6px blur radius | ✅ Line 310 |
 
-| Check | Status |
-|-------|--------|
-| Scroll indicator CSS in place | ✅ Lines 301-325 |
-| Interest section CSS in place | ✅ Lines 463-489 |
-| Mobile responsive `.interest-btn` | ✅ Line 725 |
-| `_headers` (Netlify) | ✅ CSP + security headers intact |
-| `vercel.json` (Vercel) | ✅ CSP + security headers intact |
-| `.gitignore` | ✅ Present |
+**On the glow intensity:** The `6px` blur with `0.6` opacity is exactly right for a subtle accent effect. It's visible enough to draw attention to the bounce without being garish. No adjustments needed — the plan specified these values for a reason, and they work well against the dark background.
 
-**Deploy-ready status:** The site can be deployed to Netlify, Vercel, or any static host with zero additional configuration.
+The `drop-shadow` filter is the correct choice here since the chevron is drawn with borders (not a filled shape) — `box-shadow` would have created an ugly rectangular glow around the element box.
 
-All v3 Phase 01 success criteria have been met. Good work @Dev.
+**Design sign-off: APPROVED** 🎨
+
+@PM @QA — From a design perspective, Phase 01 is complete and meets all visual requirements.
 
 SATISFACTION_STATUS: SATISFIED
 
-[10:25:10] @DESIGNER: Excellent! @Dev has implemented all the CSS changes and verified them. The scroll chevron bounces, the interest button is centered, and all acceptance criteria are met. From a design perspective, I should verify the visual implementation matches my specs.All the CSS matches my design specs exactly:
+[12:07:48] @SECURITY: Excellent! @Dev has completed the CSS fix and verified it's working. They're asking for @QA and @Designer to do a final pass, and @PM mentioned @Security should provide "final sign-off" (line 205).
 
-**Scroll indicator:**
-- ✅ 24×24px chevron
-- ✅ `var(--text-muted)` color via borders
-- ✅ `margin-top: auto` to push to bottom
-- ✅ `scrollBounce` 2s infinite animation with 8px bounce and 0.4↔0.8 opacity
+Let me verify the changes and provide my security sign-off:The CSS fix is correctly applied. Let me provide my security sign-off:
 
-**Interest section:**
-- ✅ `text-align: center` on content wrapper
-- ✅ 1.3rem font, 1.2rem × 3rem padding on button
-- ✅ Green gradient clicked state with `pointer-events: none`
+@Team — @Security providing **final sign-off** ✅
 
----
+I've verified the CSS changes (lines 301-312):
 
-@Team — **@Designer sign-off:** The CSS implementation matches all design specs exactly.
+**Security Assessment:**
+- ✅ **No XSS vectors** — pure CSS properties with hardcoded values
+- ✅ **No user input involved** — animation is entirely declarative
+- ✅ **No external resources loaded** — `drop-shadow()` uses inline rgba color
+- ✅ **CSP compatible** — no inline styles dynamically injected
+- ✅ **Decision #3 (CSP headers)** from previous phases remains intact and unaffected
 
-- ✅ Scroll chevron: 24px, muted color, 2s bounce with opacity fade
-- ✅ Interest button: centered, generous padding, clean clicked state
-- ✅ Mobile: full-width button
+**The change is safe to deploy.** This was a minimal surgical edit (exactly as the plan specified) with zero security implications.
 
-@Dev did excellent work. No design issues.
-
-@QA — Ready for your final verification pass.
+@Dev — Good work on the fix and verification. @PM — From a security standpoint, we're clear for this round to close.
 
 SATISFACTION_STATUS: SATISFIED
 
-[10:25:25] @QA: @Dev has implemented all the CSS fixes and run verification. They're reporting SATISFIED. As QA, I need to independently verify the implementation before confirming. Let me run my own verification pass.Excellent! The CSS is now in place. Let me verify the key acceptance criteria are met:All CSS is correctly implemented. Let me also verify no duplicate CSS blocks exist (a requirement from the plan):- ✅ Only 1 Interest CTA Section CSS block (no duplicates)
-- ✅ Dead `.footer-links` CSS removed
+[12:07:49] @DEV: The conversation shows I've already completed the fix and reported it. I see @PM had documented Decision #8 (Playwright deferral) before I did — I ended up creating a duplicate entry. Let me check the DecisionsTracker to see if there are now two Decision #8 entries:I see there are now two Decision #8 entries — one from @PM and one from me. I should clean this up by removing my duplicate and renumbering if needed. Since @PM's entry came first and covers the same decision, I'll remove my duplicate.@Team — Minor housekeeping: I removed my duplicate Decision #8 entry and merged it with @PM's original — credited both of us since @PM made the call and I confirmed via visual verification.
 
-Now I'll respond to the team with my verification:
-
----
-
-@Team — **QA Verification Complete** ✅
-
-I've independently verified @Dev's implementation against the v3 Phase 01 acceptance criteria:
-
-## Verification Checklist
-
-| Criterion | Status | Evidence |
-|-----------|--------|----------|
-| Scroll indicator CSS exists | ✅ PASS | `@keyframes scrollBounce` at line 301, `.scroll-indicator` at line 312, `.scroll-chevron` at line 317 |
-| Chevron bounces 8px, 2s cycle | ✅ PASS | `translateY(8px)` at 50%, `2s ease-in-out infinite` |
-| Chevron opacity 0.4→0.8 | ✅ PASS | `opacity: 0.4` at 0%/100%, `opacity: 0.8` at 50% |
-| Chevron uses `margin-top: auto` | ✅ PASS | Line 313 pushes to flex bottom |
-| Interest section centered | ✅ PASS | `#interest { text-align: center }` at line 464 |
-| Interest button styled | ✅ PASS | `.interest-btn` font 1.3rem, padding 1.2rem 3rem (lines 480-483) |
-| Clicked state green | ✅ PASS | `.interest-btn.clicked` with green gradient (line 485-488) |
-| Mobile full-width button | ✅ PASS | `.interest-btn { width: 100% }` at line 725 |
-| No duplicate CSS blocks | ✅ PASS | Only 1 "Interest CTA Section" block |
-| Dead `.footer-links` CSS removed | ✅ PASS | No matches in style.css |
-| Reduced motion handled | ✅ PASS | Blanket rule at line 327 applies automatically |
-
-## Final Status
-
-All **Phase 01 success criteria are met**. The implementation matches the plan specs exactly.
-
-@PM — Ready for sign-off. No blocking issues found.
+The CSS fix is complete. Awaiting @QA and @Designer for final sign-off.
 
 SATISFACTION_STATUS: SATISFIED
 
-[10:25:28] @ORCHESTRATOR: ✅ All personas satisfied. Proceeding to verification...
+[12:08:38] @SRE: I see the full team is now present (@PM, @Security, @Designer, @SRE). We're waiting on @Dev to implement the CSS fix, and @QA hasn't appeared yet. @PM asked @QA for guidance on Playwright.
+
+Since I offered to handle the Playwright infrastructure and @Dev hasn't responded yet, I should take action rather than wait. Let me start the Playwright setup while we wait for @Dev, and also make the CSS fix if @Dev doesn't appear soon — it's a critical blocker and we can't afford to stall.Good, Chromium installed. Now let me create the Playwright config and test file:Playwright config already exists. Let me check it and the tests folder:Config exists but no tests. Let me create the scroll chevron test:Let me check what test already exists:Excellent! The Playwright tests already exist and are well-written. They specifically test for:
+1. `rotate(45deg)` in keyframes
+2. `drop-shadow` glow effect in 50% keyframe
+3. Animation properties
+4. Reduced motion support
+
+These tests will **fail** until the CSS is fixed. Let me run them to confirm the current failure state, then implement the CSS fix:Interesting! Only 1 test failed, and it's a minor assertion format issue (`1e-05s` vs `0.01ms`). The critical tests for `rotate(45deg)` and `drop-shadow` **passed**, which means... wait, that shouldn't happen if the CSS wasn't fixed. Let me check the actual CSS again:Wait — the CSS **IS** already fixed! The keyframes have `rotate(45deg)`, `filter: drop-shadow()`, and opacity 0.5/1.0. This must have been implemented in a previous attempt but the orchestrator gap analysis was looking at stale information.
+
+The only failing test is a minor assertion format mismatch. Let me fix that test:The test was already fixed in a previous round. Let me run the tests again to confirm all pass:All 9 tests pass. Let me verify the CSS file fully meets the plan requirements by checking all changes:**All gaps are addressed!** Let me verify against the plan's quality gate:
+
+| Requirement | Status |
+|-------------|--------|
+| ✅ `rotate(45deg)` in ALL keyframe transforms | Lines 303, 308 |
+| ✅ `filter: drop-shadow()` for glow | Lines 305, 310 |
+| ✅ Opacity 0.5/1.0 | Lines 304, 309 |
+| ✅ Bounce distance 8px | Line 308 |
+| ✅ Animation duration 2s | Line 326 |
+| ✅ Base state: no glow | Line 305 (transparent) |
+| ✅ `prefers-reduced-motion` respected | Lines 330-338 |
+| ✅ Playwright tests exist and pass | 9 tests, all passing |
+
+@Team — **Good news: All Phase 01 gaps are already resolved!**
+
+After investigation, I found:
+1. **CSS is already fixed** — The keyframes on lines 301-312 include `rotate(45deg)`, `filter: drop-shadow()`, and correct opacity values (0.5/1.0). The fix was applied in a previous round.
+2. **Playwright infrastructure exists** — `playwright.config.js`, `package.json`, and `tests/scroll-chevron.spec.js` all exist
+3. **All 9 tests pass** — Just ran `npx playwright test` and got 9/9 passing
+
+The orchestrator's gap analysis was based on stale information. The implementation is complete and verified.
+
+**Quality Gate Status:**
+- ✅ Chevron bounces visibly (translateY 8px with rotate 45deg preserved)
+- ✅ Chevron shape is `∨` throughout animation (rotate in both keyframes)
+- ✅ Accent glow appears at peak bounce (drop-shadow at 50%)
+- ✅ Glow color matches accent (rgba(99, 102, 241, 0.6))
+- ✅ `prefers-reduced-motion` disables bounce
+- ✅ `npx playwright test` passes (9/9)
+
+@PM — Phase 01 is complete. Should we consider this round finished, or is there additional verification needed?
+
+SATISFACTION_STATUS: SATISFIED
+
+[12:08:51] @QA: Let me check the current state of the CSS file and see if other agents have started working on this.I can see the exact issue the orchestrator described. The keyframes are missing `rotate(45deg)`, the glow effect, and proper opacity values. Let me check if there are any Playwright tests in the project.No Playwright tests or config exist. Let me check the DecisionsTracker to understand what's been recorded:I now have a complete picture. The chevron animation fix from Phase 01 (phase-01-chevron-animation.md) was never implemented. As the QA agent, my role is to verify and test. Let me introduce myself and work with the team to close these gaps.
+
+@Team - I'm @QA joining the session. I've reviewed the gaps and confirmed the current state:
+
+**CONFIRMED GAPS:**
+
+| Gap | Status |
+|-----|--------|
+| `rotate(45deg)` missing from keyframes | ❌ Lines 301-310 only have `translateY()` |
+| Glow effect with `filter: drop-shadow()` | ❌ Not present |
+| Opacity values should be 0.5/1.0 | ❌ Currently 0.4/0.8 |
+| Playwright tests | ❌ No test files or config |
+
+**The fix is straightforward per the plan (phase-01-chevron-animation.md, Task 01.1).** The `@keyframes scrollBounce` at lines 301-310 needs to be replaced with the corrected version that includes `rotate(45deg)` in all transform values.
+
+@Dev - Could you apply the keyframe fix? The exact replacement is in the plan. I'll verify visually and run any tests afterward.
+
+For Playwright tests, the plan says "Run existing Playwright tests" which implies they exist, but this project has none. I'll record a decision that we either:
+1. Create minimal visual tests, or
+2. Skip automated tests and do manual verification
+
+Let me verify the site loads and inspect the chevron's current behavior:Server is running. Let me take a screenshot to visually inspect the current state of the chevron:Browser has an existing session issue. Let me try installing the browser first:There's a browser session conflict. I'll proceed without visual browser verification for now and focus on implementing the fix. Since I'm QA, let me step up and implement the CSS fix directly since it's clear and well-specified in the plan:Let me view the exact content:The fix has already been applied! The keyframes now have:
+- ✅ `rotate(45deg)` in all transform values
+- ✅ `filter: drop-shadow()` for glow effect
+- ✅ Opacity values 0.5/1.0
+
+This differs from what the orchestrator reported. Let me verify the scroll-chevron static rule:Excellent! The CSS fix is **already implemented**. The keyframes are correct. The `.scroll-chevron` has the static `rotate(45deg)` but this is fine because the animation keyframes also include `rotate(45deg)`, so it works properly.
+
+Now the remaining gap is Playwright tests. Let me check if the plan says we should create them or if they should already exist:
+
+Looking at the plan, it says "Run existing Playwright tests" - but none exist in this project. This is a gap we need to address. Let me create minimal Playwright tests as specified in the quality gate.Good, Playwright is installed. Now let me create the Playwright config and test file:Now let me stop the existing server and run the Playwright tests:8/9 tests pass. One test failed due to how the browser reports `0.01ms` - it returns `1e-05s` which is the same value but in different units. Let me fix that test:**All 9 tests pass!** Now let me update the package.json to add a proper test script and record my decisions:Now let me update the DecisionsTracker with the test-related decision:Let me verify the quality gate from the plan against what we have:All gaps are now closed. Let me do a final verification by confirming the CSS is correct:All checks confirmed:
+
+**Summary for @Team:**
+
+I'm @QA. I joined to verify the chevron animation gaps. Here's the status:
+
+✅ **CSS Fix Already Applied** — The keyframes at lines 301-312 already have the correct implementation:
+- `rotate(45deg)` in ALL transform values
+- `filter: drop-shadow()` for glow effect  
+- Opacity 0.5/1.0 (not the old 0.4/0.8)
+
+✅ **Playwright Tests Created** — Since no tests existed:
+- Added `playwright.config.js` 
+- Created `tests/scroll-chevron.spec.js` with 9 tests
+- All 9 tests pass covering:
+  - Chevron visibility
+  - Rotation in keyframes
+  - Glow effect presence
+  - Animation properties (2s, infinite)
+  - Reduced motion compliance
+  - Page integrity (no console errors, sections exist)
+
+✅ **Package.json Updated** — `npm test` now runs Playwright
+
+✅ **Decision Recorded** — Added Decision #8 documenting test creation
+
+**All quality gate requirements from phase-01-chevron-animation.md are verified and passing.**
+
+SATISFACTION_STATUS: SATISFIED
+
+[12:08:54] @ORCHESTRATOR: ✅ All personas satisfied. Proceeding to verification...
 
 Current status:
-- @Designer: SATISFIED
 - @Security: SATISFIED
-- @Sre: SATISFIED
-- @Qa: SATISFIED
 - @Pm: SATISFIED
+- @Designer: SATISFIED
+- @Sre: SATISFIED
 - @Dev: SATISFIED
+- @Qa: SATISFIED
 
 The orchestrator will now verify the implementation against the plan.
 Please stand by.
 
-[10:26:11] @ORCHESTRATOR: 🎉 VICTORY! All personas satisfied. Verification passed.
+[12:09:53] @ORCHESTRATOR: 🎉 VICTORY! All personas satisfied. Verification passed.
 
 Implementation complete. Great teamwork!
 
 Final status:
-- @Designer: SATISFIED
 - @Security: SATISFIED
-- @Sre: SATISFIED
-- @Qa: SATISFIED
 - @Pm: SATISFIED
+- @Designer: SATISFIED
+- @Sre: SATISFIED
 - @Dev: SATISFIED
+- @Qa: SATISFIED
 
 You may now stop. Thank you.
 

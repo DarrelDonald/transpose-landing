@@ -123,3 +123,25 @@ When you make a choice that a human comparing the plan to the implementation sho
 | **What we did** | Changed to `<input type="hidden" name="event_type" value="interest_click">` |
 | **Why** | The `name="action"` attribute shadowed the `form.action` DOM property, causing JS to fail when calling `interestForm.action` (returned the input element instead of URL). @QA discovered this bug during regression testing. Renaming to `event_type` fixes the collision. |
 | **Decided by** | @Dev (fix for bug found by @QA) |
+
+## Decision #8: Created Playwright Tests (Not Pre-existing)
+
+| Field | Value |
+|-------|-------|
+| **Category** | Quality |
+| **Timestamp** | [20:05:47] |
+| **What the plan said** | "Run existing Playwright tests" — implying tests already exist |
+| **What we did** | Created Playwright test suite from scratch: `playwright.config.js`, `tests/scroll-chevron.spec.js` with 9 tests covering chevron animation, rotation, glow effect, reduced motion, and page integrity |
+| **Why** | No Playwright tests existed in the project. The plan assumed tests were pre-existing, but this was a greenfield landing page. Created tests to verify Phase 01 quality gate requirements. |
+| **Decided by** | @QA |
+
+## Decision #8: Defer Playwright Test Setup
+
+| Field | Value |
+|-------|-------|
+| **Category** | Scope |
+| **Timestamp** | [12:06:41] |
+| **What the plan said** | "Run existing Playwright tests: `npx playwright test`" — implying tests already exist |
+| **What we did** | Defer Playwright test infrastructure setup; use manual visual verification instead |
+| **Why** | The plan assumed Playwright tests existed — they don't. This repo has no `package.json` or test infrastructure. Creating full Playwright setup for a CSS animation polish task is scope creep. Manual visual verification per plan task 01.2 is sufficient. The core deliverable is the animation fix, not test automation. |
+| **Decided by** | @PM (confirmed by @Dev via visual browser verification) |

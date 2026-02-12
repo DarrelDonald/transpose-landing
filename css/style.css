@@ -300,12 +300,14 @@ button:focus-visible,
 /* Scroll Indicator */
 @keyframes scrollBounce {
   0%, 100% {
-    transform: translateY(0);
-    opacity: 0.4;
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.5;
+    filter: drop-shadow(0 0 0 transparent);
   }
   50% {
-    transform: translateY(8px);
-    opacity: 0.8;
+    transform: translateY(8px) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
   }
 }
 

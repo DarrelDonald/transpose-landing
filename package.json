@@ -1,0 +1,19 @@
+{
+  "name": "transpose-landing-mandali-20260212-120401",
+  "version": "1.0.0",
+  "description": "> Transpose your playing into notation.",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.58.2"
+  },
+  "dependencies": {
+    "playwright": "^1.58.2",
+    "playwright-core": "^1.58.2"
+  }
+}

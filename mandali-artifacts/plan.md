@@ -1,151 +1,196 @@
 # === _CONTEXT.md (READ FIRST) ===
 
-# Transpose Landing Page v3 — Global Context
+# Transpose Landing Page v5 — Global Context
 
 > **READ THIS FIRST.** This context applies to ALL phases.
 
-## Project: Transpose Landing Page (Hotfix — Post-v2 Review)
+## Project: Transpose Landing Page (Polish — Scroll Chevron Animation)
 
-Two UX issues found during owner review of the v2 implementation. This plan fixes both.
+The scroll chevron is visible and correctly positioned, but it's static — no animation is playing. This plan fixes the animation and adds a subtle accent glow highlight.
 
 **Repository:** `C:\Projects\transpose-landing`
 **Language:** HTML5, CSS3, vanilla JavaScript (ES6+)
-**Dependencies:** None. Zero frameworks. Static files only.
 
 **Main file(s):**
-- `index.html` — Single-page site, all sections (266 lines)
-- `css/style.css` — All styling (719 lines) — dark theme, responsive, animations
-- `js/main.js` — Form handling, IntersectionObserver fade-ins (84 lines)
+- `css/style.css` — lines 300-325 contain all scroll indicator styles
 
 ## Goal
 
-Fix two specific issues identified during owner review:
-1. **"I Want This" button is not centered** — the interest CTA button is visually off-center on the page
-2. **Hero section feels like the entire page** — there's no visual cue that content exists below the fold, making visitors think the hero is all there is
+1. **Fix the scroll chevron animation** — it should gently bounce up and down
+2. **Add a subtle glow highlight** — the chevron should pulse with the accent color at peak bounce
 
-## Architecture Decision: Surgical CSS + HTML Fix
+## Root Cause: Why the Chevron Is Static
 
-| Rejected | Why |
-|----------|-----|
-| Redesign the hero layout | Overkill — the hero content is fine, it just needs a scroll affordance |
-| Add a navigation bar | Adds complexity, not needed for a single-page landing |
+The `scrollBounce` keyframes (`style.css` lines 301-310) currently read:
 
-**Chosen: Add a scroll indicator to the hero + fix button centering CSS** because:
-- Minimal changes — one new HTML element, a few CSS rules
-- Scroll indicators are a proven UX pattern for full-viewport hero sections
-- Button centering is a pure CSS fix
+```css
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.8;
+  }
+}
+```
+
+The `.scroll-chevron` static rule (line 322) has `transform: rotate(45deg)`. But CSS animations **completely replace** the `transform` property on each frame — they don't merge with the static value. So when the animation runs:
+- Frame 0%: `transform: translateY(0)` → **rotation is gone**, chevron becomes an invisible square corner
+- Frame 50%: `transform: translateY(8px)` → still no rotation
+
+The chevron appears "static" because it's actually animating, but the rotation that makes it look like a downward chevron is being stripped on every frame. The fix is to include `rotate(45deg)` in every keyframe step.
 
 ## Architecture Diagram
 
 ```
-C:\Projects\transpose-landing\
-├── index.html          # ← EDIT: add scroll indicator element to hero section
-├── css/
-│   └── style.css       # ← EDIT: scroll indicator styles, interest button centering fix, remove duplicate CSS block
-├── js/
-│   └── main.js         # (no change)
+css/style.css (lines 300-325)
+├── @keyframes scrollBounce    ← FIX: add rotate(45deg) to all transform values
+├── .scroll-indicator          ← no change
+└── .scroll-chevron            ← ENHANCE: add accent glow via filter/box-shadow
 ```
+
+No other files are modified. No HTML changes. No JS changes.
 
 ## Design Decisions (Locked)
 
 | # | Decision | Detail |
 |---|----------|--------|
-| 1 | **Scroll indicator style** | A subtle bouncing chevron/arrow at the bottom of the hero section. Uses `--text-muted` color. Animated with a gentle vertical bounce (2s infinite ease-in-out). Fades slightly at rest, brightens at peak bounce. |
-| 2 | **Scroll indicator is decorative** | Mark with `aria-hidden="true"`. Not a link, not interactive — purely a visual affordance. |
-| 3 | **Chevron, not arrow** | Use a CSS-drawn chevron (`∨` shape via borders or the `chevron-down` unicode ‹ ˅ ›) rather than a text arrow character. CSS borders give a cleaner, more modern look than a `↓` character. |
-| 4 | **Button centering approach** | The `#interest` section already has `text-align: center`. The `.btn-primary` base class is `display: inline-block`. This should center it via text-align inheritance. If the button is not centering, the issue is likely a conflicting rule or the button is `display: block` without `margin: 0 auto`. Diagnose and fix the actual cause. |
-| 5 | **Remove duplicate CSS** | There are two identical `Interest CTA Section` CSS blocks in `style.css` (one around line 433 and another around line 521). Remove the duplicate. |
-| 6 | **Respect reduced motion** | The scroll indicator bounce animation must be disabled when `prefers-reduced-motion: reduce` is active. The existing reduced-motion media query (line 310-318) uses a blanket `animation-duration: 0.01ms !important` rule that will handle this automatically. |
-
-## Key Internals You Need to Know
-
-### Current State of Relevant Code
-
-**Hero section** (`index.html` lines 34-101):
-- `<section id="hero">` contains `.hero-content` (text) and `.hero-visual` (SVG)
-- The scroll indicator should be added as a sibling AFTER `.hero-visual`, still inside `#hero`
-- The section closes at line 101 with `</section>`
-
-**Hero CSS** (`style.css` lines 183-191):
-```css
-#hero {
-  min-height: 100vh;    /* ← This is why it feels like the whole page */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  flex-direction: column;
-  padding: 2rem 1.5rem;
-}
-```
-The hero is a flex column, centered both ways. The scroll indicator needs to be pushed to the bottom. Use `margin-top: auto` on the indicator to push it to the bottom of the flex container.
-
-**Interest button** (`index.html` around line 155-163 after v2 changes add it):
-- Lives in `<section id="interest">` with `text-align: center` on the section
-- The button has class `btn-primary interest-btn`
-- `.btn-primary` is `display: inline-block` (line 99) — this should center via `text-align: center` on the parent
-- Check if there's a conflicting `display: block` somewhere, or if the interest section inherits `max-width` constraints from the base `section` rule (line 56-60) that might cause misalignment
-
-**Duplicate CSS blocks:**
-- First instance: lines 433-460 (Interest CTA Section)
-- Second instance: lines 521-548 (exact duplicate)
-- Remove the second instance (lines 521-548)
-
-### Reduced Motion
-
-The existing blanket rule at lines 310-318 will automatically handle the scroll indicator:
-```css
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-```
+| 1 | **Include rotate(45deg) in ALL keyframe transforms** | Every keyframe step that sets `transform` must include `rotate(45deg)` alongside `translateY`. This is the fix for the static chevron. |
+| 2 | **Accent glow at peak bounce** | At the 50% keyframe (peak of bounce), add a subtle glow using the accent color. Use `filter: drop-shadow()` on the chevron element — this works on border-drawn shapes where `box-shadow` would show a rectangular shadow. |
+| 3 | **Glow color matches accent** | Use `var(--accent-start)` (#6366f1) for the glow color with transparency. Example: `filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6))`. |
+| 4 | **Bounce distance stays at 8px** | The existing 8px translateY is a good distance — noticeable but not distracting. |
+| 5 | **Animation duration stays at 2s** | The 2s cycle is appropriately calm for a background indicator. |
+| 6 | **Base state: muted, no glow** | At 0%/100%, the chevron is `--text-muted` colored with no glow. The glow only appears as it bounces down. |
+| 7 | **Respect prefers-reduced-motion** | The existing blanket reduced-motion rule (lines 328-336) handles this automatically. |
 
 ## Non-Negotiables
 
-1. **Zero regression.** All existing sections, forms, animations, and interactions must remain intact.
-2. **Scroll indicator is decorative only.** `aria-hidden="true"`, no interactive behavior.
-3. **Mobile-first.** Scroll indicator must look correct on 375px screens.
-4. **No JavaScript for scroll indicator.** Pure CSS animation.
-5. **The chevron must be visually centered** horizontally within the hero.
-6. **The interest button must be visually centered** on all viewports.
+1. **The chevron must visually bounce.** Not just fade — it must translate vertically.
+2. **The rotation must be preserved throughout the animation.** The chevron must always look like a downward-pointing `∨`, never a square corner.
+3. **Zero regression.** Only `style.css` lines 300-325 are modified. Nothing else changes.
 
 ## Agents Needed
 
-- **@Dev** — HTML element addition, CSS fixes
-- **@Designer** — Scroll indicator visual design, spacing, animation timing
-- **@QA** — Verify centering on multiple viewports, check reduced motion, regression test
-- **@PM** — Acceptance criteria verification
+- **@Dev** — CSS keyframe fix
+- **@Designer** — Glow intensity and timing review
+- **@QA** — Visual verification, run existing Playwright tests
 
 
 
 # === _INDEX.md ===
 
-# Transpose Landing Page v3 — Phase Index
+# Transpose Landing Page v5 — Phase Index
 
 ## Overview
-Fix two UX issues from v2 review: off-center "I Want This" button and missing scroll indicator in hero section.
+Fix static scroll chevron animation and add accent glow highlight effect.
 
 ## Phases
 
 | Phase | File | Status | Description |
 |-------|------|--------|-------------|
-| 01 | phase-01-scroll-indicator-and-button-fix.md | NOT STARTED | Add scroll indicator to hero bottom, fix interest button centering, remove duplicate CSS |
+| 01 | phase-01-chevron-animation.md | NOT STARTED | Fix keyframe rotation, add glow effect, verify with Playwright |
 
 ## Dependencies
 - None (single phase)
 
 ## Success Criteria
-- [ ] A subtle animated chevron appears at the bottom of the hero section, signaling more content below
-- [ ] The chevron is horizontally centered and bounces gently
-- [ ] The chevron respects `prefers-reduced-motion` (no animation)
-- [ ] The chevron is `aria-hidden="true"` (decorative only)
-- [ ] The "I Want This" interest button is visually centered on all viewports (375px, 768px, 1440px)
-- [ ] No duplicate CSS blocks in `style.css`
-- [ ] All existing sections, forms, and animations still work (zero regression)
+- [ ] Scroll chevron visibly bounces up and down (8px travel)
+- [ ] Scroll chevron maintains its downward-pointing `∨` shape throughout the animation (never becomes a square corner)
+- [ ] At peak bounce, a subtle accent-colored glow appears around the chevron
+- [ ] At rest, no glow — just the muted border color
+- [ ] Animation respects `prefers-reduced-motion`
+- [ ] Existing Playwright tests still pass: `npx playwright test`
+- [ ] No console errors
+
+
+
+# === phase-01-chevron-animation.md ===
+
+# Phase 01 — Chevron Animation Fix & Glow Effect
+
+## Goal
+Fix the scroll chevron so it actually bounces, and add a subtle accent glow at peak bounce. This is a CSS-only change in `style.css` lines 300-325.
+
+## Prerequisites
+- Read `_CONTEXT.md` first for the root cause explanation.
+
+## Critical Constraint
+**Only modify `css/style.css` lines 300-325.** No other files. No other lines.
+
+## Tasks
+
+### 01.1 — Fix Keyframe Animation
+
+In `css/style.css`, replace the `scrollBounce` keyframes (lines 301-310).
+
+Change FROM:
+```css
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.8;
+  }
+}
+```
+
+Change TO:
+```css
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0) rotate(45deg);
+    opacity: 0.5;
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  50% {
+    transform: translateY(8px) rotate(45deg);
+    opacity: 1;
+    filter: drop-shadow(0 0 6px rgba(99, 102, 241, 0.6));
+  }
+}
+```
+
+**What changed and why:**
+1. **`rotate(45deg)` added to both keyframe steps** — this is the critical fix. Without it, the animation overwrites the static `transform: rotate(45deg)` and the chevron loses its shape.
+2. **`opacity` adjusted** — base 0.5 (was 0.4), peak 1.0 (was 0.8). Slightly more visible overall.
+3. **`filter: drop-shadow()` added** — at rest, transparent (no glow). At peak bounce, a soft 6px accent-colored glow appears around the chevron shape. `drop-shadow` is used instead of `box-shadow` because the chevron is drawn with borders — `box-shadow` would create a rectangular shadow around the element box, while `drop-shadow` follows the actual visible shape.
+
+### 01.2 — Verify Animation Visually
+
+1. Start the local server: `python -m http.server 8000`
+2. Open `http://localhost:8000` in a browser
+3. Look at the bottom of the hero section
+4. Confirm:
+   - The chevron bounces gently (moves down ~8px and back, 2 second cycle)
+   - The chevron always looks like a downward `∨` (never a square corner)
+   - At the bottom of the bounce, a subtle purple/blue glow appears
+   - At the top of the bounce, the glow fades away
+   - The chevron is dimmer at rest, brighter at peak
+5. Enable `prefers-reduced-motion` in browser DevTools (Rendering panel) and confirm the chevron is static
+
+### 01.3 — Run Existing Playwright Tests
+
+Run the full Playwright test suite to confirm zero regression:
+
+```bash
+cd C:\Projects\transpose-landing
+npx playwright test
+```
+
+All tests must pass. The scroll chevron visibility test should still pass since the chevron is still visible — it now also animates.
+
+## Quality Gate
+- [ ] Chevron bounces visibly (not static)
+- [ ] Chevron shape is `∨` throughout the entire animation cycle (never a square corner)
+- [ ] Accent glow appears at peak bounce and fades at rest
+- [ ] Glow color matches accent (#6366f1 / rgba(99, 102, 241, 0.6))
+- [ ] `prefers-reduced-motion` disables the bounce (chevron is static)
+- [ ] `npx playwright test` passes all tests
 - [ ] No console errors
 
 
