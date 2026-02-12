@@ -181,7 +181,7 @@ button:focus-visible,
    Hero Section
    ============================================ */
 #hero {
-  min-height: 100vh;
+  min-height: 90vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,7 +207,7 @@ button:focus-visible,
 }
 
 .hero-description {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   color: var(--text-secondary);
   line-height: 1.7;
   margin-bottom: 2.5rem;
@@ -216,15 +216,11 @@ button:focus-visible,
   margin-right: auto;
 }
 
-.hero-cta {
-  font-size: 1.2rem;
-}
-
 /* Hero Visual */
 .hero-visual {
-  margin-top: 3rem;
+  margin-top: 2rem;
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
 }
 
 .hero-visual svg {
@@ -258,13 +254,8 @@ button:focus-visible,
   opacity: 0;
 }
 
-.hero-cta {
-  animation: heroFadeUp 0.8s ease 0.6s forwards;
-  opacity: 0;
-}
-
 .hero-visual {
-  animation: heroFadeUp 0.8s ease 0.8s forwards;
+  animation: heroFadeUp 0.8s ease 0.6s forwards;
   opacity: 0;
 }
 
@@ -305,6 +296,33 @@ button:focus-visible,
 
 .music-note:nth-child(2) { animation-delay: 0.3s; }
 .music-note:nth-child(3) { animation-delay: 0.6s; }
+
+/* Scroll Indicator */
+@keyframes scrollBounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 0.8;
+  }
+}
+
+.scroll-indicator {
+  margin-top: auto;
+  padding-bottom: 1.5rem;
+}
+
+.scroll-chevron {
+  width: 24px;
+  height: 24px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(45deg);
+  margin: 0 auto;
+  animation: scrollBounce 2s ease-in-out infinite;
+}
 
 /* Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
@@ -440,6 +458,36 @@ button:focus-visible,
 .solution-step:nth-child(3) { transition-delay: 0.3s; }
 
 /* ============================================
+   Interest CTA Section
+   ============================================ */
+#interest {
+  text-align: center;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.interest-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.interest-prompt {
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.interest-btn {
+  font-size: 1.3rem;
+  padding: 1.2rem 3rem;
+}
+
+.interest-btn.clicked {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  pointer-events: none;
+}
+
+/* ============================================
    Signup Section
    ============================================ */
 #signup {
@@ -496,17 +544,6 @@ button:focus-visible,
   margin-top: 1.5rem;
   color: #4ade80;
   font-weight: 500;
-}
-
-.signup-counter {
-  color: var(--text-muted);
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-}
-
-.counter-number {
-  color: var(--accent-start);
-  font-weight: 700;
 }
 
 /* ============================================
@@ -651,24 +688,6 @@ button:focus-visible,
   margin-bottom: 1.5rem;
 }
 
-.footer-links {
-  display: flex;
-  gap: 1.5rem;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-}
-
-.footer-links a {
-  color: var(--text-secondary);
-  text-decoration: none;
-  font-size: 1.2rem;
-  transition: color var(--transition-fast);
-}
-
-.footer-links a:hover {
-  color: var(--accent-start);
-}
-
 .footer-copyright {
   color: var(--text-muted);
   font-size: 0.8rem;
@@ -680,11 +699,6 @@ button:focus-visible,
 @media (max-width: 768px) {
   :root {
     --section-padding: 3rem 1rem;
-  }
-
-  .hero-cta {
-    width: 100%;
-    text-align: center;
   }
 
   /* Problem cards: single column */
@@ -705,6 +719,12 @@ button:focus-visible,
   /* Hide step connectors on mobile */
   .solution-step::after {
     display: none !important;
+  }
+
+  /* Interest CTA: full-width button on mobile */
+  .interest-btn {
+    width: 100%;
+    text-align: center;
   }
 
   /* Signup form: stacked */

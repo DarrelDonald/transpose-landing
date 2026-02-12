@@ -38,11 +38,10 @@
       </h1>
       <p class="hero-tagline">Transpose your playing into notation.</p>
       <p class="hero-description">
-        You've spent years mastering your instrument. But the moment you need
-        your playing as MIDI or sheet music, you're stuck clicking notes one
+        You've spent years mastering your instrument. But when it's time to get
+        your playing into MIDI or sheet music, you're stuck clicking notes one
         by one. That ends now.
       </p>
-      <a href="#signup" class="btn-primary hero-cta">I Need This</a>
     </div>
     <div class="hero-visual">
       <!-- SVG waveform-to-notation visual -->
@@ -98,6 +97,9 @@
         </g>
       </svg>
     </div>
+    <div class="scroll-indicator" aria-hidden="true">
+      <div class="scroll-chevron"></div>
+    </div>
   </section>
 
   <!-- Problem Section -->
@@ -141,14 +143,26 @@
         <div class="step-number">2</div>
         <div class="step-icon">⚡</div>
         <h3>Transpose</h3>
-        <p>Our AI listens and transcribes in real-time. No MIDI controller. No piano keyboard. Just your sound.</p>
+        <p>We listen and transcribe in real-time. No extra gear. Just your sound.</p>
       </div>
       <div class="solution-step">
         <div class="step-number">3</div>
         <div class="step-icon">🎹</div>
         <h3>Create</h3>
-        <p>Get MIDI, sheet music, or both. Drop it into your DAW, notation software, or arrangement. Keep creating.</p>
+        <p>Get MIDI, sheet music, or both. Drop it straight into your DAW or notation software. Keep creating.</p>
       </div>
+    </div>
+  </section>
+
+  <!-- Interest CTA -->
+  <section id="interest" class="fade-in">
+    <div class="interest-content">
+      <p class="interest-prompt">Ready to stop clicking notes one by one?</p>
+      <button class="btn-primary interest-btn" id="interest-btn">I Want This</button>
+      <form id="interest-form" action="https://formspree.io/f/YOUR_FORMSPREE_INTEREST_ID" method="POST" hidden>
+        <input type="hidden" name="event_type" value="interest_click">
+        <input type="hidden" name="timestamp" id="interest-timestamp">
+      </form>
     </div>
   </section>
 
@@ -167,7 +181,6 @@
       <div class="signup-confirmation" hidden>
         <p>✓ You're in. We'll let you know the moment Transpose is ready.</p>
       </div>
-      <p class="signup-counter">Be among the first to know</p>
     </div>
   </section>
 
@@ -252,11 +265,7 @@
     <div class="footer-content">
       <p class="footer-brand"><span class="text-gradient">Transpose</span></p>
       <p class="footer-tagline">Play it. Score it.</p>
-      <div class="footer-links">
-        <a href="https://twitter.com/" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
-        <a href="mailto:hello@transpose.fm" aria-label="Email">✉</a>
-      </div>
-      <p class="footer-copyright">© 2025 Transpose. All rights reserved.</p>
+      <p class="footer-copyright">© 2026 Transpose. All rights reserved.</p>
     </div>
   </footer>
 
