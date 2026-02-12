@@ -112,3 +112,14 @@ When you make a choice that a human comparing the plan to the implementation sho
 | **What we did** | Add `maxlength` attributes: email=254, textareas=2000, other instruments=100 |
 | **Why** | Prevents abuse via excessively long inputs. RFC 5321 limit for email. @Security recommendation. |
 | **Decided by** | @Security (approved by @PM) |
+
+## Decision #7: Rename Interest Form Input to Avoid DOM Property Collision
+
+| Field | Value |
+|-------|-------|
+| **Category** | Implementation |
+| **Timestamp** | [18:53:44] |
+| **What the plan said** | Use `<input type="hidden" name="action" value="interest_click">` |
+| **What we did** | Changed to `<input type="hidden" name="event_type" value="interest_click">` |
+| **Why** | The `name="action"` attribute shadowed the `form.action` DOM property, causing JS to fail when calling `interestForm.action` (returned the input element instead of URL). @QA discovered this bug during regression testing. Renaming to `event_type` fixes the collision. |
+| **Decided by** | @Dev (fix for bug found by @QA) |

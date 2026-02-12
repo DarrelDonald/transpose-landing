@@ -1,174 +1,464 @@
 # === _CONTEXT.md (READ FIRST) ===
 
-# Transpose Landing Page — Global Context
+# Transpose Landing Page v2 — Global Context
 
 > **READ THIS FIRST.** This context applies to ALL phases.
 
-## Project: Transpose Landing Page (New — Greenfield)
+## Project: Transpose Landing Page (Iteration — Existing Codebase)
 
-A demand-gauge landing page for **Transpose**, a product concept that converts audio from any instrument into MIDI and sheet music. The page sells the vision, captures interest signals, and collects user feedback — before any product code is written.
+An iteration on the existing demand-gauge landing page for **Transpose**, a product concept that converts audio from any instrument into MIDI and sheet music. The page sells the vision, captures interest signals, and collects user feedback — before any product code is written.
 
-**Repository:** `C:\Projects\transpose-landing` (to be created by Phase 01)
+This is NOT a greenfield build. The site already exists and is feature-complete from a prior 3-phase plan. This plan addresses UX and copy issues identified during owner review.
+
+**Repository:** `C:\Projects\transpose-landing`
 **Language:** HTML5, CSS3, vanilla JavaScript (ES6+)
 **Dependencies:** None. Zero frameworks. Static files only.
 **Form backend:** Formspree (https://formspree.io) — free tier, no server needed
 **Deploy target:** Any static host (Vercel, Netlify, GitHub Pages) — zero-config
 
+**Main file(s):**
+- `index.html` — Single-page site, all sections
+- `css/style.css` — All styling (~719 lines) — dark theme, responsive, animations
+- `js/main.js` — Form handling, IntersectionObserver fade-ins (~84 lines)
+
 ## Goal
 
-Build a single-page marketing site that:
-1. **Sells the Transpose vision** — makes musicians feel seen, makes them want this product yesterday
-2. **Captures excitement signals** — one-click "I Need This" email signup (low friction)
-3. **Collects structured user feedback** — instrument, frustrations, use cases, time spent transcribing
-4. **Is deploy-ready** — works on any static host with no build step
+Improve the landing page based on owner feedback to:
+1. **Make the hero section more compelling** — reduce empty space, stronger hook, no premature CTA
+2. **Fix awkward copy** — rewrite the hero pain statement for natural flow
+3. **Add a zero-friction interest signal** — "I Want This" button that logs a click to Formspree and scrolls to the email/survey section
+4. **Remove AI references** — avoid alienating artists who distrust AI marketing
+5. **Fix copy inconsistencies** — remove "or arrangement" from solution step 3, fix footer year and social links
+6. **Restructure CTA flow** — hero hooks → problem builds tension → solution provides relief → CTA captures interest
 
-## Architecture Decision: Static HTML (No Framework)
+## Architecture Decision: Iteration on Existing Static Site
 
 | Rejected | Why |
 |----------|-----|
-| React / Next.js | Overkill for a single landing page. Adds build complexity, no benefit for static content. |
-| WordPress / CMS | Adds hosting complexity, security surface, unnecessary for a validation page. |
-| Webflow / Squarespace | Lock-in, limited customization, harder to version control. |
+| Rebuild from scratch | Site is 90% good. Surgical changes are faster and lower risk. |
+| Add framework | Still overkill. The changes are copy, layout, and one new Formspree endpoint. |
 
-**Chosen: Static HTML + CSS + vanilla JS** because:
-- Zero build step — open `index.html` in a browser and it works
-- Deploys anywhere with zero config
-- Full control over every pixel
-- Easy to hand off or modify later
-- Fast page load — no JS framework overhead
+**Chosen: Edit existing files in place** because:
+- Minimal diff = minimal regression risk
+- All infrastructure (Formspree, Vercel, CSP headers) already works
+- Changes are primarily copy, layout adjustments, and one new form interaction
 
 ## Architecture Diagram
 
 ```
 C:\Projects\transpose-landing\
-├── index.html          # Single-page site (all sections)
+├── index.html          # ← EDIT: hero restructure, CTA move, copy fixes
 ├── css/
-│   └── style.css       # All styling — dark theme, responsive, animations
+│   └── style.css       # ← EDIT: hero layout changes, interest-btn styles
 ├── js/
-│   └── main.js         # Form handling, scroll animations, counter UX
+│   └── main.js         # ← EDIT: interest click handler, Formspree silent submit
 ├── assets/
-│   ├── favicon.svg     # SVG favicon (musical note or waveform)
-│   └── og-image.png    # Open Graph preview image (1200x630) — placeholder
-└── README.md           # Setup & deploy instructions
+│   ├── favicon.svg     # (no change)
+│   └── og-image.png    # (no change)
+├── _headers            # (no change)
+├── vercel.json         # (no change)
+└── README.md           # ← EDIT: add note about interest click Formspree form
 ```
 
 ## Design Decisions (Locked)
 
 | # | Decision | Detail |
 |---|----------|--------|
-| 1 | **Single HTML file** | All sections in one `index.html`. No routing, no multi-page. Single-page scroll. |
-| 2 | **Dark theme** | Dark background (#0a0a0f or similar), light text, accent color for CTAs. Musical "stage lighting" feel. |
-| 3 | **Accent color** | Electric blue/purple gradient (#6366f1 → #8b5cf6). Evokes digital, modern, musical. |
-| 4 | **Typography** | Google Fonts: `Inter` for body, `Space Grotesk` for headings. Both free, modern, highly legible. |
-| 5 | **Formspree for forms** | Both the email signup and feedback form submit to Formspree. No backend server. Two separate Formspree form endpoints. |
-| 6 | **No build tools** | No npm, no webpack, no Sass. Raw CSS, raw JS. Keep it simple. |
-| 7 | **Mobile-first responsive** | Design for 375px width first, scale up. Musicians will find this on social media (phone). |
-| 8 | **CSS custom properties** | Use CSS variables for colors, spacing, fonts. Makes theming consistent and easy to tweak. |
-| 9 | **Smooth scroll** | Nav anchor links use `scroll-behavior: smooth`. Sections have IDs. |
-| 10 | **Intersection Observer** | Use `IntersectionObserver` for scroll-triggered fade-in animations. No animation library. |
-| 11 | **Formspree placeholder IDs** | Use `YOUR_FORMSPREE_SIGNUP_ID` and `YOUR_FORMSPREE_FEEDBACK_ID` as placeholders in form `action` attributes. User replaces after creating Formspree forms. |
+| 1 | **No CTA in hero** | Hero section hooks and intrigues. No "I Need This" button. CTA comes AFTER the solution section. |
+| 2 | **"I Want This" button** | New primary CTA after solution section. Clicking it: (a) silently submits a Formspree form with a timestamp, (b) smooth-scrolls to the signup/feedback area. |
+| 3 | **No AI language** | Do not use the word "AI" anywhere on the page. Step 2 body text becomes: "We listen and transcribe in real-time. No extra gear. Just your sound." |
+| 4 | **No displayed counter** | No signup counter shown on page. Interest data lives in Formspree dashboard only. |
+| 5 | **No social links in footer** | Remove Twitter/X link. Remove footer-links section entirely. Users communicate via forms. |
+| 6 | **Footer year: 2026** | Update copyright to current year. |
+| 7 | **Hero must feel substantial** | Reduce empty space. Make the SVG visual larger/more prominent. Increase hero text size or visual weight so the above-the-fold experience feels rich, not sparse. |
+| 8 | **Keep feedback form as-is** | The full feedback form stays unchanged. It's in its own section and is optional. |
+| 9 | **Formspree for interest clicks** | Use a third Formspree form endpoint (`YOUR_FORMSPREE_INTEREST_ID`) to log anonymous "I want this" clicks. Submit via JS fetch with timestamp only. |
+| 10 | **Dark theme, accent color, typography** | All visual design decisions from v1 remain locked. No changes to colors, fonts, or overall aesthetic. |
 
-## Product Copy (Locked)
+## Updated Page Flow (in scroll order)
 
-These are the final copy decisions. Agents must use this exact text.
+1. **Hero** — Product name, tagline, stronger pain statement, NO CTA button, prominent SVG visual
+2. **Problem ("Sound familiar?")** — 4 pain-point cards (unchanged)
+3. **Solution ("How it works")** — 3 steps with updated copy (no AI reference)
+4. **Interest CTA** — "I Want This" button (integrated as a closer to the solution section). Clicks log to Formspree, scrolls to signup.
+5. **Signup** — "Count Me In" email capture (counter text removed)
+6. **Feedback ("Help us build exactly what you need")** — Full structured form (unchanged fields)
+7. **Footer** — Brand, tagline, copyright 2026 (no social links)
 
-| Element | Text |
-|---------|------|
-| **Product name** | Transpose |
-| **Tagline** | Transpose your playing into notation. |
-| **Hero pain statement** | You've spent years mastering your instrument. But the moment you need your playing as MIDI or sheet music, you're stuck clicking notes one by one. That ends now. |
-| **CTA button (hero)** | I Need This |
-| **CTA button (signup)** | Count Me In |
-| **Signup confirmation** | You're in. We'll let you know the moment Transpose is ready. |
-| **Feedback CTA** | Help Us Build This Right |
-| **Footer tagline** | Play it. Score it. |
+## Updated Copy
 
-## Page Sections (in scroll order)
+These are the updated copy decisions. Agents must use this exact text.
 
-1. **Hero** — Name, tagline, pain statement, CTA, waveform-to-notation SVG visual
-2. **Problem** — 4 pain-point cards (guitarist, brass player, arranger, producer)
-3. **Solution** — 3-step "how it works" (Play → Transpose → Create)
-4. **Signup** — "Count Me In" email capture with interest counter
-5. **Feedback** — Structured form (instruments, frustrations, use cases, time)
-6. **Footer** — Tagline, social links, copyright
+| Element | Old Text | New Text | Reason |
+|---------|----------|----------|--------|
+| **Hero pain statement** | "You've spent years mastering your instrument. But the moment you need your playing as MIDI or sheet music, you're stuck clicking notes one by one. That ends now." | "You've spent years mastering your instrument. But when it's time to get your playing into MIDI or sheet music, you're stuck clicking notes one by one. That ends now." | "the moment you need your playing as MIDI" reads awkwardly. |
+| **Solution step 2 body** | "Our AI listens and transcribes in real-time. No MIDI controller. No piano keyboard. Just your sound." | "We listen and transcribe in real-time. No extra gear. Just your sound." | Remove AI reference. Cleaner phrasing. |
+| **Solution step 3 body** | "Get MIDI, sheet music, or both. Drop it into your DAW, notation software, or arrangement. Keep creating." | "Get MIDI, sheet music, or both. Drop it straight into your DAW or notation software. Keep creating." | "or arrangement" was abstract next to concrete software references. |
+| **Interest CTA button** | (did not exist) | "I Want This" | New zero-friction interest signal. |
+| **Signup counter text** | "Be among the first to know" | (removed entirely) | No counter displayed. |
+| **Footer copyright** | "© 2025 Transpose. All rights reserved." | "© 2026 Transpose. All rights reserved." | Year update. |
+| **Footer social links** | Twitter (𝕏) + Email (✉) | (removed entirely) | Owner has no Twitter. Forms handle communication. |
 
-## Pain Point Cards (Locked Copy)
+## Copy That Does NOT Change
 
-| Card | Icon | Title | Body |
-|------|------|-------|------|
-| 1 | 🎸 | "I wrote a riff. Getting it into my DAW took longer than writing it." | You play guitar. You think in frets and strings. But your DAW thinks in piano keys and mouse clicks. |
-| 2 | 🎺 | "20 years of trumpet. Zero years of piano. That shouldn't matter." | You're a virtuoso on your instrument. But to input MIDI, you need to be a pianist too? That's absurd. |
-| 3 | 🎼 | "The arranging is the fun part. The transcribing is the tax." | You hear a song and know exactly how to arrange it. But first you spend hours clicking notes into a score, one by one. |
-| 4 | 🎧 | "I lose creative momentum at the MIDI input step." | The idea is flowing. You can hear the whole track. But the moment you sit down to input it digitally, the magic fades. |
+The following copy is locked and must remain exactly as-is:
 
-## Solution Steps (Locked Copy)
+- Product name: **Transpose**
+- Tagline: **Transpose your playing into notation.**
+- Hero heading: `<span class="text-gradient">Transpose</span>`
+- Problem section heading: **Sound familiar?**
+- All 4 pain-point card titles and body text
+- Solution section heading: **How it works**
+- Solution step 1 (Play) — title and body unchanged
+- Solution step 2 (Transpose) — title unchanged, body updated (see table above)
+- Solution step 3 (Create) — title unchanged, body updated (see table above)
+- Signup heading: **Be first to know**
+- Signup subtitle: **Transpose is coming. Drop your email and we'll notify you the moment it's ready.**
+- Signup CTA: **Count Me In**
+- Signup confirmation: **You're in. We'll let you know the moment Transpose is ready.**
+- Feedback heading: **Help us build exactly what you need**
+- Feedback subtitle and all form fields unchanged
+- Feedback CTA: **Help Us Build This Right**
+- Footer tagline: **Play it. Score it.**
 
-| Step | Icon/Visual | Title | Body |
-|------|-------------|-------|------|
-| 1 | 🎵 | Play | Pick up your instrument — guitar, trumpet, violin, voice, anything. Play your part the way you've always played it. |
-| 2 | ⚡ | Transpose | Our AI listens and transcribes in real-time. No MIDI controller. No piano keyboard. Just your sound. |
-| 3 | 🎹 | Create | Get MIDI, sheet music, or both. Drop it into your DAW, notation software, or arrangement. Keep creating. |
+## Key Internals You Need to Know
 
-## Feedback Form Fields (Locked)
+### Current File State
 
-| Field | Type | Options |
-|-------|------|---------|
-| What instrument(s) do you play? | Checkboxes | Guitar, Bass, Vocals, Trumpet, Saxophone, Violin/Viola, Cello, Piano/Keys, Drums/Percussion, Flute/Clarinet, Other (free text) |
-| What's your biggest frustration getting your playing into digital format? | Textarea | — |
-| What would you use Transpose for? | Checkboxes | MIDI for production, Sheet music / lead sheets, Arranging for ensembles, Transcription services, Teaching / education, Other (free text) |
-| How much time do you spend transcribing per week? | Radio | Less than 1 hour, 1–3 hours, 3–5 hours, 5+ hours |
-| Email (so we can follow up) | Email input | Optional |
-| Anything else you want us to know? | Textarea | — |
+| File | Lines | Key Sections |
+|------|-------|-------------|
+| `index.html` | 266 | Hero (L34-101), Problem (L103-128), Solution (L130-153), Signup (L155-172), Feedback (L174-248), Footer (L250-261) |
+| `css/style.css` | 719 | Variables (L6-30), Hero (L183-318), Problem (L322-366), Solution (L376-441), Signup (L444-511), Feedback (L514-628), Footer (L632-676), Responsive (L680-719) |
+| `js/main.js` | 84 | IntersectionObserver (L5-14), Form handler (L19-53), Form wiring (L56-67), Counter (L72-84) |
+
+### Critical Functions
+
+| Function | File:Line | Purpose |
+|----------|-----------|---------|
+| `handleFormSubmit(form, confirmationEl)` | `main.js:19` | Generic form submit handler — POST to Formspree, show confirmation |
+| `incrementCounter()` | `main.js:74` | Increments counter display — TO BE REMOVED |
+| IntersectionObserver | `main.js:5` | Adds `.visible` class on scroll for fade-in animations |
+
+### CSP Headers
+
+Both `_headers` (Netlify) and `vercel.json` allow `connect-src 'self' https://formspree.io` — the new interest click Formspree submission will work without CSP changes.
 
 ## Non-Negotiables
 
-1. **No JavaScript frameworks.** Vanilla JS only. No React, Vue, jQuery, etc.
-2. **No build step.** The site must work by opening `index.html` directly (or via a simple HTTP server).
-3. **Mobile-first.** Must look great on 375px screens. Desktop is a progressive enhancement.
-4. **Forms degrade gracefully.** If JS is disabled, forms still submit via native HTML form `action` to Formspree.
-5. **Accessible.** Semantic HTML, proper heading hierarchy, form labels, sufficient color contrast (WCAG AA on dark background), focus indicators.
-6. **Fast.** No images except favicon and OG image. Use CSS and SVG for visuals. Page should load in under 1 second on 3G.
-7. **The copy in this document is final.** Do not rewrite headlines, pain points, or CTAs. Implement them exactly as specified.
+1. **No JavaScript frameworks.** Vanilla JS only.
+2. **No build step.** `index.html` opens directly in a browser.
+3. **Mobile-first.** Must look great on 375px screens.
+4. **Forms degrade gracefully.** Native HTML form submission to Formspree works without JS.
+5. **Accessible.** Semantic HTML, proper heading hierarchy, WCAG AA contrast, focus indicators.
+6. **Fast.** No images except favicon and OG image. CSS and SVG for visuals.
+7. **Zero regression.** Problem cards, feedback form, and all existing functionality must remain intact.
+8. **No AI language.** The word "AI" must not appear anywhere on the page.
+9. **No displayed counter.** Interest metrics are backend-only (Formspree dashboard).
+10. **No social media links.** Footer has no social links section.
 
 ## Agents Needed
 
-- **@Dev** — HTML structure, CSS styling, JS interactions
-- **@Designer** — Visual polish, animation timing, responsive breakpoints, SVG visuals
-- **@QA** — Cross-browser testing, mobile testing, accessibility audit, form validation
-- **@PM** — Acceptance criteria tracking, copy verification
-- **@Security** — Form submission security (Formspree config, no PII leaks, CSP headers)
-- **@SRE** — Deploy-readiness, static hosting config, performance baseline
+- **@Dev** — HTML edits, CSS adjustments, JS interest-click handler
+- **@Designer** — Hero visual improvements, spacing/layout refinements
+- **@QA** — Regression testing, mobile testing, copy verification
+- **@PM** — Acceptance criteria tracking, copy verification against this document
+- **@Security** — Verify CSP still works with new Formspree endpoint, no PII in interest clicks
+- **@SRE** — Verify deploy still works, no new config needed
 
 
 
 # === _INDEX.md ===
 
-# Transpose Landing Page — Phase Index
+# Transpose Landing Page v2 — Phase Index
 
 ## Overview
-Build a demand-gauge landing page for Transpose (audio-to-transcription product) that sells the vision, captures email signups, and collects structured user feedback.
+Iterate on the existing Transpose landing page to fix hero UX, restructure CTA flow, remove AI references, and add a zero-friction interest signal — based on owner review feedback.
 
 ## Phases
 
 | Phase | File | Status | Description |
 |-------|------|--------|-------------|
-| 01 | phase-01-scaffold-and-hero.md | NOT STARTED | Create project structure, HTML skeleton, CSS foundation (variables, reset, dark theme), hero section with full copy and CTA |
-| 02 | phase-02-content-sections.md | NOT STARTED | Problem cards, solution steps, signup section with email capture, feedback form with all fields |
-| 03 | phase-03-polish-and-deploy.md | NOT STARTED | Scroll animations, mobile responsive refinements, form backend wiring, accessibility pass, deploy-readiness |
+| 01 | phase-01-hero-and-cta-restructure.md | NOT STARTED | Restructure hero (remove CTA, fix copy, reduce empty space, enhance visual), add "I Want This" interest button after solution section, update solution copy |
+| 02 | phase-02-cleanup-and-polish.md | NOT STARTED | Remove counter, fix footer (year, remove social links), update README, clean up JS, final regression pass |
 
 ## Dependencies
 - Phase 02 depends on Phase 01
-- Phase 03 depends on Phase 02
 
 ## Success Criteria
-- [ ] Page loads from `index.html` with no build step and no errors in browser console
-- [ ] All 6 sections render correctly on mobile (375px) and desktop (1440px)
-- [ ] Email signup form submits to Formspree (or placeholder action) and shows confirmation
-- [ ] Feedback form submits all fields to Formspree (or placeholder action)
-- [ ] All copy matches `_CONTEXT.md` exactly — headlines, pain points, CTAs
-- [ ] Page scores 90+ on Lighthouse performance audit
-- [ ] WCAG AA color contrast passes on all text
-- [ ] Site deploys to Vercel/Netlify/GitHub Pages with zero configuration
+- [ ] Hero has no CTA button — hooks with name, tagline, pain statement, and prominent visual
+- [ ] "I Want This" button exists after solution section, logs click to Formspree, scrolls to signup
+- [ ] The word "AI" does not appear anywhere on the page
+- [ ] Solution step 2 body reads: "We listen and transcribe in real-time. No extra gear. Just your sound."
+- [ ] Solution step 3 body reads: "Get MIDI, sheet music, or both. Drop it straight into your DAW or notation software. Keep creating."
+- [ ] Hero pain statement reads: "...But when it's time to get your playing into MIDI or sheet music..."
+- [ ] No signup counter displayed on page
+- [ ] Footer has no social links, copyright says 2026
+- [ ] All 4 problem cards unchanged
+- [ ] Feedback form fully intact with all fields
+- [ ] Page loads with no console errors
+- [ ] Mobile (375px) and desktop (1440px) both look correct
+- [ ] Formspree interest click form documented in README
+
+
+
+# === phase-01-hero-and-cta-restructure.md ===
+
+# Phase 01 — Hero & CTA Restructure
+
+## Goal
+Restructure the page's emotional arc: make the hero a compelling hook (no CTA), update solution copy to remove AI references, and add a zero-friction "I Want This" interest button after the solution section that silently logs clicks to Formspree and scrolls visitors to the signup/feedback area.
+
+## Prerequisites
+- Read `_CONTEXT.md` first for all updated copy, design decisions, and non-negotiables.
+- The existing site is fully built. This phase EDITS existing files — it does not create new ones.
+
+## Critical Constraint
+**Zero regression on untouched sections.** Problem cards, signup form, and feedback form must remain fully intact. Only hero, solution, and the area between solution and signup are modified.
+
+## Tasks
+
+### 01.1 — Remove CTA from Hero, Fix Hero Copy
+
+In `index.html`, hero section (around line 34-101):
+
+**Remove the "I Need This" button:**
+Delete this line:
+```html
+<a href="#signup" class="btn-primary hero-cta">I Need This</a>
+```
+
+**Update the hero pain statement** (around line 41-44):
+Change:
+```
+But the moment you need your playing as MIDI or sheet music, you're stuck clicking notes one by one.
+```
+To:
+```
+But when it's time to get your playing into MIDI or sheet music, you're stuck clicking notes one by one.
+```
+
+In `css/style.css`, the `.hero-cta` animation rule (around line 261-264) can be removed since the element no longer exists:
+```css
+.hero-cta {
+  animation: heroFadeUp 0.8s ease 0.6s forwards;
+  opacity: 0;
+}
+```
+Remove that block. The `.hero-visual` animation delay should shift from `0.8s` to `0.6s` to keep the stagger smooth:
+```css
+.hero-visual {
+  animation: heroFadeUp 0.8s ease 0.6s forwards;
+  opacity: 0;
+}
+```
+
+Also remove the generic `.hero-cta` sizing rule (around line 219-221):
+```css
+.hero-cta {
+  font-size: 1.2rem;
+}
+```
+
+And in the responsive section (around line 687-690), remove:
+```css
+.hero-cta {
+  width: 100%;
+  text-align: center;
+}
+```
+
+### 01.2 — Enhance Hero Visual Presence
+
+The owner feedback: "the first thing I see being so empty makes me feel like what even is this? There's so much empty space and tiny lettering."
+
+In `css/style.css`, make these adjustments to the hero:
+
+**Increase hero description text size** — change `.hero-description` (around line 209):
+```css
+.hero-description {
+  font-size: 1.15rem;
+```
+(from `1.1rem` — subtle but helps readability)
+
+**Make the SVG visual larger and closer to the text** — change `.hero-visual` (around line 225-228):
+```css
+.hero-visual {
+  margin-top: 2rem;    /* was 3rem — bring it closer */
+  width: 100%;
+  max-width: 600px;    /* was 500px — make it more prominent */
+}
+```
+
+**Reduce hero vertical padding** so it doesn't feel as cavernous — the `min-height: 100vh` on `#hero` (line 184) keeps the section full-height. Consider changing to `min-height: 90vh` to reduce the bottom gap:
+```css
+#hero {
+  min-height: 90vh;
+```
+
+The overall effect: text feels more substantial, visual is larger and closer, less dead space below the fold line.
+
+### 01.3 — Update Solution Section Copy
+
+In `index.html`, solution section (around line 130-153):
+
+**Step 2 body text** — change:
+```html
+<p>Our AI listens and transcribes in real-time. No MIDI controller. No piano keyboard. Just your sound.</p>
+```
+To:
+```html
+<p>We listen and transcribe in real-time. No extra gear. Just your sound.</p>
+```
+
+**Step 3 body text** — change:
+```html
+<p>Get MIDI, sheet music, or both. Drop it into your DAW, notation software, or arrangement. Keep creating.</p>
+```
+To:
+```html
+<p>Get MIDI, sheet music, or both. Drop it straight into your DAW or notation software. Keep creating.</p>
+```
+
+### 01.4 — Add "I Want This" Interest Button
+
+Add a new CTA element between the solution section and the signup section. This is the primary conversion point.
+
+In `index.html`, after the closing `</section>` of `#solution` (around line 153) and before `#signup` (around line 155), add:
+
+```html
+<!-- Interest CTA -->
+<section id="interest" class="fade-in">
+  <div class="interest-content">
+    <p class="interest-prompt">Ready to stop clicking notes one by one?</p>
+    <button class="btn-primary interest-btn" id="interest-btn">I Want This</button>
+    <form id="interest-form" action="https://formspree.io/f/YOUR_FORMSPREE_INTEREST_ID" method="POST" hidden>
+      <input type="hidden" name="action" value="interest_click">
+      <input type="hidden" name="timestamp" id="interest-timestamp">
+    </form>
+  </div>
+</section>
+```
+
+**CSS for interest section** — add to `css/style.css` before the Signup section comment:
+
+```css
+/* ============================================
+   Interest CTA Section
+   ============================================ */
+#interest {
+  text-align: center;
+  padding: 3rem 1.5rem 4rem;
+}
+
+.interest-content {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.interest-prompt {
+  color: var(--text-secondary);
+  font-size: 1.15rem;
+  margin-bottom: 1.5rem;
+}
+
+.interest-btn {
+  font-size: 1.3rem;
+  padding: 1.2rem 3rem;
+}
+
+.interest-btn.clicked {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  pointer-events: none;
+}
+```
+
+### 01.5 — Wire Up Interest Button in JavaScript
+
+In `js/main.js`, add the interest click handler. Add this after the form wiring section (around line 67):
+
+```javascript
+// ============================================
+// Interest "I Want This" Button
+// ============================================
+const interestBtn = document.getElementById('interest-btn');
+const interestForm = document.getElementById('interest-form');
+
+if (interestBtn && interestForm) {
+  interestBtn.addEventListener('click', async () => {
+    // Log click to Formspree silently
+    const timestampInput = document.getElementById('interest-timestamp');
+    if (timestampInput) {
+      timestampInput.value = new Date().toISOString();
+    }
+
+    try {
+      await fetch(interestForm.action, {
+        method: 'POST',
+        body: new FormData(interestForm),
+        headers: { 'Accept': 'application/json' }
+      });
+    } catch (e) {
+      // Silent fail — don't block UX for analytics
+    }
+
+    // Visual feedback
+    interestBtn.textContent = '✓ You want this!';
+    interestBtn.classList.add('clicked');
+
+    // Scroll to signup section
+    const signupSection = document.getElementById('signup');
+    if (signupSection) {
+      setTimeout(() => {
+        signupSection.scrollIntoView({ behavior: 'smooth' });
+      }, 600);
+    }
+  });
+}
+```
+
+Also, remove the counter code that is no longer needed (around lines 72-84):
+```javascript
+// ============================================
+// Signup Counter
+// ============================================
+let counterAnimated = false;
+
+function incrementCounter() {
+  const counterEl = document.querySelector('.counter-number');
+  if (counterEl) {
+    const currentCount = parseInt(counterEl.textContent) || 0;
+    counterEl.textContent = currentCount + 1;
+  }
+}
+
+// Counter starts at 0, showing "Be among the first to know" message
+// No fake seed number per Decision #1
+```
+
+And remove the `incrementCounter()` call inside the `handleFormSubmit` function (around line 41-43):
+```javascript
+// If this is the signup form, trigger counter increment
+if (form.classList.contains('signup-form')) {
+  incrementCounter();
+}
+```
+
+## Quality Gate
+- [ ] Hero section: shows product name, tagline, pain statement (updated copy), and SVG visual — NO CTA button
+- [ ] Hero feels more substantial — less empty space, larger visual, readable text
+- [ ] Pain statement reads: "But when it's time to get your playing into MIDI or sheet music"
+- [ ] The word "AI" does not appear anywhere on the page
+- [ ] Solution step 2: "We listen and transcribe in real-time. No extra gear. Just your sound."
+- [ ] Solution step 3: "...Drop it straight into your DAW or notation software..."
+- [ ] "I Want This" button appears after solution section, centered, prominent
+- [ ] Clicking "I Want This": button changes to "✓ You want this!", scrolls to signup section
+- [ ] Formspree receives a POST with `action=interest_click` and `timestamp` on button click
+- [ ] Button cannot be clicked twice (pointer-events: none after click)
+- [ ] Problem cards are completely unchanged
+- [ ] Signup form still works (email submit → confirmation)
+- [ ] Feedback form still works (all fields submit → confirmation)
+- [ ] No console errors
+- [ ] Mobile (375px): interest button is full-width and tappable, hero looks good
 
 
 
@@ -402,6 +692,153 @@ This is the scaffold — Phase 03 will add form handling and more interactions.
 - [ ] No console errors
 - [ ] Page looks correct on mobile (375px) — text is readable, button is tappable, nothing overflows
 - [ ] Placeholder sections exist in HTML (empty but present) for problem, solution, signup, feedback, footer
+
+
+
+# === phase-02-cleanup-and-polish.md ===
+
+# Phase 02 — Cleanup & Polish
+
+## Goal
+Remove the signup counter, fix footer (year update, remove social links), update README with the new Formspree interest form, and do a final regression pass to ensure all changes from Phase 01 integrate cleanly.
+
+## Prerequisites
+- Read `_CONTEXT.md` first for all design decisions and non-negotiables.
+- Phase 01 complete — hero restructured, interest button working, solution copy updated.
+
+## Critical Constraint
+**Zero regression.** All changes from Phase 01 must still work. Problem cards, signup form, and feedback form must remain fully intact.
+
+## Tasks
+
+### 02.1 — Remove Signup Counter
+
+In `index.html`, in the signup section (around line 170), remove the counter paragraph:
+```html
+<p class="signup-counter">Be among the first to know</p>
+```
+
+In `css/style.css`, remove the counter-related styles (around lines 501-511):
+```css
+.signup-counter {
+  color: var(--text-muted);
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.counter-number {
+  color: var(--accent-start);
+  font-weight: 700;
+}
+```
+
+### 02.2 — Fix Footer
+
+In `index.html`, footer section (around line 250-261):
+
+**Remove the social links div entirely:**
+```html
+<div class="footer-links">
+  <a href="https://twitter.com/" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+  <a href="mailto:hello@transpose.fm" aria-label="Email">✉</a>
+</div>
+```
+
+**Update the copyright year:**
+Change:
+```html
+<p class="footer-copyright">© 2025 Transpose. All rights reserved.</p>
+```
+To:
+```html
+<p class="footer-copyright">© 2026 Transpose. All rights reserved.</p>
+```
+
+In `css/style.css`, remove the footer-links styles (around lines 655-670):
+```css
+.footer-links {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.footer-links a {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 1.2rem;
+  transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+  color: var(--accent-start);
+}
+```
+
+### 02.3 — Update README
+
+In `README.md`, update the Forms section to include the interest click form:
+
+Change:
+```markdown
+## Forms
+Email signup and feedback forms use Formspree. Replace the placeholder IDs in `index.html`:
+- `YOUR_FORMSPREE_SIGNUP_ID` — create at https://formspree.io
+- `YOUR_FORMSPREE_FEEDBACK_ID` — create at https://formspree.io
+```
+To:
+```markdown
+## Forms
+Email signup, feedback, and interest tracking use Formspree. Replace the placeholder IDs in `index.html` and `js/main.js`:
+- `YOUR_FORMSPREE_SIGNUP_ID` — email signup form. Create at https://formspree.io
+- `YOUR_FORMSPREE_FEEDBACK_ID` — feedback survey form. Create at https://formspree.io
+- `YOUR_FORMSPREE_INTEREST_ID` — "I Want This" click tracking. Create at https://formspree.io. Receives `action` and `timestamp` fields.
+```
+
+### 02.4 — Add Responsive Styles for Interest Section
+
+In `css/style.css`, in the responsive section (around line 680), add mobile styles for the interest button:
+
+```css
+/* Interest CTA: full-width button on mobile */
+.interest-btn {
+  width: 100%;
+  text-align: center;
+}
+```
+
+This goes inside the existing `@media (max-width: 768px)` block.
+
+### 02.5 — Final Regression Pass
+
+Verify the full page end-to-end:
+
+1. **Open `index.html` in a browser** (or via `python -m http.server 8000`)
+2. **Hero section:** Product name with gradient, tagline, updated pain statement, SVG visual. No CTA button. Feels substantial — not too much empty space.
+3. **Problem section:** 4 cards, all correct copy, hover effects work, fade-in animation triggers on scroll.
+4. **Solution section:** 3 steps with updated copy. No "AI" anywhere. Connectors visible on desktop, hidden on mobile.
+5. **Interest section:** "I Want This" button centered. Clicking it shows "✓ You want this!" and scrolls to signup.
+6. **Signup section:** Email input + "Count Me In" button. No counter text. Submit shows confirmation.
+7. **Feedback section:** All 6 field groups present. Submit shows confirmation.
+8. **Footer:** Brand, tagline, copyright 2026. No social links.
+9. **Mobile (375px):** All sections stack properly. Interest button full-width. No horizontal scroll.
+10. **Desktop (1440px):** Layout is clean. Problem cards in grid. Solution steps horizontal with connectors.
+11. **Console:** Zero errors, zero warnings.
+12. **Accessibility:** Skip link works. Focus indicators visible on all interactive elements. Heading hierarchy correct (h1 → h2 → h3).
+
+## Quality Gate
+- [ ] No signup counter text anywhere on the page
+- [ ] Footer shows only: brand name, "Play it. Score it.", "© 2026 Transpose. All rights reserved." — no social links
+- [ ] README documents all three Formspree form IDs including the interest click tracker
+- [ ] Interest button is full-width on mobile (375px)
+- [ ] Full page scrolls correctly: hero → problem → solution → interest → signup → feedback → footer
+- [ ] All forms still submit correctly (signup and feedback)
+- [ ] Interest button click → green feedback → scroll to signup
+- [ ] Zero console errors
+- [ ] No horizontal scroll at any viewport 375px–1440px
+- [ ] The word "AI" does not appear anywhere in the rendered page
+- [ ] All problem card copy matches v1 exactly (zero changes)
+- [ ] All feedback form fields match v1 exactly (zero changes)
 
 
 

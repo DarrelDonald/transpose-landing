@@ -36,11 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (response.ok) {
           form.hidden = true;
           confirmationEl.hidden = false;
-          
-          // If this is the signup form, trigger counter increment
-          if (form.classList.contains('signup-form')) {
-            incrementCounter();
-          }
         } else {
           submitBtn.textContent = 'Something went wrong. Try again?';
           submitBtn.disabled = false;
@@ -67,18 +62,40 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ============================================
-  // Signup Counter
+  // Interest "I Want This" Button
   // ============================================
-  let counterAnimated = false;
-  
-  function incrementCounter() {
-    const counterEl = document.querySelector('.counter-number');
-    if (counterEl) {
-      const currentCount = parseInt(counterEl.textContent) || 0;
-      counterEl.textContent = currentCount + 1;
-    }
-  }
+  const interestBtn = document.getElementById('interest-btn');
+  const interestForm = document.getElementById('interest-form');
 
-  // Counter starts at 0, showing "Be among the first to know" message
-  // No fake seed number per Decision #1
+  if (interestBtn && interestForm) {
+    interestBtn.addEventListener('click', async () => {
+      // Log click to Formspree silently
+      const timestampInput = document.getElementById('interest-timestamp');
+      if (timestampInput) {
+        timestampInput.value = new Date().toISOString();
+      }
+
+      try {
+        await fetch(interestForm.action, {
+          method: 'POST',
+          body: new FormData(interestForm),
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (e) {
+        // Silent fail — don't block UX for analytics
+      }
+
+      // Visual feedback
+      interestBtn.textContent = '✓ You want this!';
+      interestBtn.classList.add('clicked');
+
+      // Scroll to signup section
+      const signupSection = document.getElementById('signup');
+      if (signupSection) {
+        setTimeout(() => {
+          signupSection.scrollIntoView({ behavior: 'smooth' });
+        }, 600);
+      }
+    });
+  }
 });
