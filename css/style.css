@@ -280,7 +280,7 @@ button:focus-visible,
 }
 
 .wave-bar {
-  transform-origin: bottom;
+  transform-origin: 50% 100%;
   animation: wavePulse 1.5s ease-in-out infinite;
 }
 
@@ -295,8 +295,8 @@ button:focus-visible,
   animation: noteFloat 2s ease-in-out infinite;
 }
 
-.music-note:nth-child(2) { animation-delay: 0.3s; }
-.music-note:nth-child(3) { animation-delay: 0.6s; }
+.notes > g:nth-child(2) .music-note { animation-delay: 0.3s; }
+.notes > g:nth-child(3) .music-note { animation-delay: 0.6s; }
 
 /* Scroll Indicator */
 @keyframes scrollBounce {
