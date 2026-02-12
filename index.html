@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transpose — Play it. Score it.</title>
+  <meta name="description" content="Transpose — turn any instrument into a MIDI controller. Play guitar, trumpet, violin, or voice and get MIDI and sheet music instantly.">
+  
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://transpose.fm/">
+  
+  <!-- Open Graph -->
+  <meta property="og:title" content="Transpose — Play it. Score it.">
+  <meta property="og:description" content="Transpose your playing into notation. Turn any instrument into a MIDI controller.">
+  <meta property="og:image" content="assets/og-image.png">
+  <meta property="og:type" content="website">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Skip to Content Link -->
+  <a href="#hero" class="skip-link">Skip to content</a>
+  
+  <!-- Hero Section -->
+  <section id="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="text-gradient">Transpose</span>
+      </h1>
+      <p class="hero-tagline">Transpose your playing into notation.</p>
+      <p class="hero-description">
+        You've spent years mastering your instrument. But the moment you need
+        your playing as MIDI or sheet music, you're stuck clicking notes one
+        by one. That ends now.
+      </p>
+      <a href="#signup" class="btn-primary hero-cta">I Need This</a>
+    </div>
+    <div class="hero-visual">
+      <!-- SVG waveform-to-notation visual -->
+      <svg viewBox="0 0 500 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="waveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#6366f1"/>
+            <stop offset="100%" style="stop-color:#8b5cf6"/>
+          </linearGradient>
+          <linearGradient id="noteGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#8b5cf6"/>
+            <stop offset="100%" style="stop-color:#6366f1"/>
+          </linearGradient>
+        </defs>
+        
+        <!-- Waveform bars (left side) -->
+        <g class="waveform">
+          <rect class="wave-bar" x="30" y="50" width="12" height="40" rx="6" fill="url(#waveGradient)"/>
+          <rect class="wave-bar" x="50" y="30" width="12" height="70" rx="6" fill="url(#waveGradient)"/>
+          <rect class="wave-bar" x="70" y="45" width="12" height="50" rx="6" fill="url(#waveGradient)"/>
+          <rect class="wave-bar" x="90" y="20" width="12" height="80" rx="6" fill="url(#waveGradient)"/>
+          <rect class="wave-bar" x="110" y="40" width="12" height="55" rx="6" fill="url(#waveGradient)"/>
+          <rect class="wave-bar" x="130" y="35" width="12" height="60" rx="6" fill="url(#waveGradient)"/>
+          <rect class="wave-bar" x="150" y="50" width="12" height="40" rx="6" fill="url(#waveGradient)"/>
+        </g>
+        
+        <!-- Connection (center) -->
+        <g class="connection">
+          <line x1="180" y1="60" x2="280" y2="60" stroke="url(#waveGradient)" stroke-width="2" stroke-dasharray="8,4" opacity="0.6"/>
+          <circle cx="230" cy="60" r="4" fill="#8b5cf6"/>
+        </g>
+        
+        <!-- Musical notes (right side) -->
+        <g class="notes">
+          <!-- Quarter note 1 -->
+          <g class="music-note" transform="translate(310, 30)">
+            <ellipse cx="10" cy="60" rx="12" ry="9" fill="url(#noteGradient)" transform="rotate(-15, 10, 60)"/>
+            <rect x="19" y="10" width="4" height="50" fill="url(#noteGradient)"/>
+          </g>
+          <!-- Quarter note 2 -->
+          <g class="music-note" transform="translate(360, 20)">
+            <ellipse cx="10" cy="60" rx="12" ry="9" fill="url(#noteGradient)" transform="rotate(-15, 10, 60)"/>
+            <rect x="19" y="10" width="4" height="50" fill="url(#noteGradient)"/>
+          </g>
+          <!-- Eighth note pair -->
+          <g class="music-note" transform="translate(410, 35)">
+            <ellipse cx="10" cy="55" rx="10" ry="7" fill="url(#noteGradient)" transform="rotate(-15, 10, 55)"/>
+            <rect x="18" y="15" width="3" height="40" fill="url(#noteGradient)"/>
+            <ellipse cx="45" cy="50" rx="10" ry="7" fill="url(#noteGradient)" transform="rotate(-15, 45, 50)"/>
+            <rect x="53" y="10" width="3" height="40" fill="url(#noteGradient)"/>
+            <path d="M21 15 Q35 5 56 10" stroke="url(#noteGradient)" stroke-width="4" fill="none"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Problem Section -->
+  <section id="problem" class="fade-in">
+    <h2>Sound familiar?</h2>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <span class="problem-icon">🎸</span>
+        <h3>"I wrote a riff. Getting it into my DAW took longer than writing it."</h3>
+        <p>You play guitar. You think in frets and strings. But your DAW thinks in piano keys and mouse clicks.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🎺</span>
+        <h3>"20 years of trumpet. Zero years of piano. That shouldn't matter."</h3>
+        <p>You're a virtuoso on your instrument. But to input MIDI, you need to be a pianist too? That's absurd.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🎼</span>
+        <h3>"The arranging is the fun part. The transcribing is the tax."</h3>
+        <p>You hear a song and know exactly how to arrange it. But first you spend hours clicking notes into a score, one by one.</p>
+      </div>
+      <div class="problem-card">
+        <span class="problem-icon">🎧</span>
+        <h3>"I lose creative momentum at the MIDI input step."</h3>
+        <p>The idea is flowing. You can hear the whole track. But the moment you sit down to input it digitally, the magic fades.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section id="solution" class="fade-in">
+    <h2>How it works</h2>
+    <div class="solution-steps">
+      <div class="solution-step">
+        <div class="step-number">1</div>
+        <div class="step-icon">🎵</div>
+        <h3>Play</h3>
+        <p>Pick up your instrument — guitar, trumpet, violin, voice, anything. Play your part the way you've always played it.</p>
+      </div>
+      <div class="solution-step">
+        <div class="step-number">2</div>
+        <div class="step-icon">⚡</div>
+        <h3>Transpose</h3>
+        <p>Our AI listens and transcribes in real-time. No MIDI controller. No piano keyboard. Just your sound.</p>
+      </div>
+      <div class="solution-step">
+        <div class="step-number">3</div>
+        <div class="step-icon">🎹</div>
+        <h3>Create</h3>
+        <p>Get MIDI, sheet music, or both. Drop it into your DAW, notation software, or arrangement. Keep creating.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Signup Section -->
+  <section id="signup" class="fade-in">
+    <div class="signup-content">
+      <h2>Be first to know</h2>
+      <p class="signup-subtitle">Transpose is coming. Drop your email and we'll notify you the moment it's ready.</p>
+      <form class="signup-form" action="https://formspree.io/f/YOUR_FORMSPREE_SIGNUP_ID" method="POST">
+        <div class="signup-input-group">
+          <input type="email" name="email" placeholder="your@email.com" required aria-label="Email address" maxlength="254">
+          <button type="submit" class="btn-primary">Count Me In</button>
+        </div>
+        <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+      </form>
+      <div class="signup-confirmation" hidden>
+        <p>✓ You're in. We'll let you know the moment Transpose is ready.</p>
+      </div>
+      <p class="signup-counter">Be among the first to know</p>
+    </div>
+  </section>
+
+  <!-- Feedback Section -->
+  <section id="feedback" class="fade-in">
+    <h2>Help us build exactly what you need</h2>
+    <p class="feedback-subtitle">Tell us about your workflow. Your answers directly shape what we build first.</p>
+    <form class="feedback-form" action="https://formspree.io/f/YOUR_FORMSPREE_FEEDBACK_ID" method="POST">
+
+      <!-- Instruments (checkboxes) -->
+      <fieldset>
+        <legend>What instrument(s) do you play?</legend>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="instruments[]" value="Guitar"> Guitar</label>
+          <label><input type="checkbox" name="instruments[]" value="Bass"> Bass</label>
+          <label><input type="checkbox" name="instruments[]" value="Vocals"> Vocals</label>
+          <label><input type="checkbox" name="instruments[]" value="Trumpet"> Trumpet</label>
+          <label><input type="checkbox" name="instruments[]" value="Saxophone"> Saxophone</label>
+          <label><input type="checkbox" name="instruments[]" value="Violin/Viola"> Violin/Viola</label>
+          <label><input type="checkbox" name="instruments[]" value="Cello"> Cello</label>
+          <label><input type="checkbox" name="instruments[]" value="Piano/Keys"> Piano/Keys</label>
+          <label><input type="checkbox" name="instruments[]" value="Drums/Percussion"> Drums/Percussion</label>
+          <label><input type="checkbox" name="instruments[]" value="Flute/Clarinet"> Flute/Clarinet</label>
+          <label><input type="checkbox" name="instruments[]" value="Other"> Other</label>
+        </div>
+        <input type="text" name="instruments_other" placeholder="Other instruments..." class="other-input" maxlength="100">
+      </fieldset>
+
+      <!-- Frustration (textarea) -->
+      <fieldset>
+        <legend>What's your biggest frustration getting your playing into digital format?</legend>
+        <textarea name="frustration" rows="4" placeholder="Tell us about your workflow..." maxlength="2000"></textarea>
+      </fieldset>
+
+      <!-- Use cases (checkboxes) -->
+      <fieldset>
+        <legend>What would you use Transpose for?</legend>
+        <div class="checkbox-grid">
+          <label><input type="checkbox" name="use_cases[]" value="MIDI for production"> MIDI for production</label>
+          <label><input type="checkbox" name="use_cases[]" value="Sheet music / lead sheets"> Sheet music / lead sheets</label>
+          <label><input type="checkbox" name="use_cases[]" value="Arranging for ensembles"> Arranging for ensembles</label>
+          <label><input type="checkbox" name="use_cases[]" value="Transcription services"> Transcription services</label>
+          <label><input type="checkbox" name="use_cases[]" value="Teaching / education"> Teaching / education</label>
+          <label><input type="checkbox" name="use_cases[]" value="Other"> Other</label>
+        </div>
+      </fieldset>
+
+      <!-- Time spent (radio) -->
+      <fieldset>
+        <legend>How much time do you spend transcribing per week?</legend>
+        <div class="radio-group">
+          <label><input type="radio" name="time_spent" value="Less than 1 hour"> Less than 1 hour</label>
+          <label><input type="radio" name="time_spent" value="1-3 hours"> 1–3 hours</label>
+          <label><input type="radio" name="time_spent" value="3-5 hours"> 3–5 hours</label>
+          <label><input type="radio" name="time_spent" value="5+ hours"> 5+ hours</label>
+        </div>
+      </fieldset>
+
+      <!-- Email (optional) -->
+      <fieldset>
+        <legend>Email (so we can follow up)</legend>
+        <input type="email" name="email" placeholder="your@email.com (optional)" maxlength="254">
+        <p class="privacy-note">We'll only use your email to follow up on your feedback.</p>
+      </fieldset>
+
+      <!-- Anything else (textarea) -->
+      <fieldset>
+        <legend>Anything else you want us to know?</legend>
+        <textarea name="anything_else" rows="3" placeholder="Ideas, wishes, rants — all welcome..." maxlength="2000"></textarea>
+      </fieldset>
+
+      <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+      <button type="submit" class="btn-primary">Help Us Build This Right</button>
+    </form>
+    <div class="feedback-confirmation" hidden>
+      <p>🙏 Thank you! Your input directly shapes what we build.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="footer-content">
+      <p class="footer-brand"><span class="text-gradient">Transpose</span></p>
+      <p class="footer-tagline">Play it. Score it.</p>
+      <div class="footer-links">
+        <a href="https://twitter.com/" target="_blank" rel="noopener" aria-label="Twitter">𝕏</a>
+        <a href="mailto:hello@transpose.fm" aria-label="Email">✉</a>
+      </div>
+      <p class="footer-copyright">© 2025 Transpose. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/main.js"></script>
+</body>
+</html>
