@@ -315,6 +315,8 @@ button:focus-visible,
 .scroll-indicator {
   margin-top: auto;
   padding-bottom: 1.5rem;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .scroll-chevron {
